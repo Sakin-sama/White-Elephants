@@ -74,9 +74,10 @@ void autonomous() {}
  * task, not resume it from where it left off.
  */
 void opcontrol() {
-
-
 	while (true) {
+		motor_controls();
+		pneumatic_controls();
+		
 		pros::lcd::print(0, "%d %d %d", (pros::lcd::read_buttons() & LCD_BTN_LEFT) >> 2,
 		                 (pros::lcd::read_buttons() & LCD_BTN_CENTER) >> 1,
 		                 (pros::lcd::read_buttons() & LCD_BTN_RIGHT) >> 0);  // Prints status of the emulated screen LCDs
