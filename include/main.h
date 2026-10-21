@@ -38,7 +38,7 @@
 #include "globals.hpp"
 #include "helpers.hpp"
 #include "autonSettings.hpp"
-
+#define MVLIB_USE_SIMPLES
 /**
  * You should add more #includes here
  */
