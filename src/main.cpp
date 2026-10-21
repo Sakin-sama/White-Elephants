@@ -27,6 +27,20 @@ void initialize() {
 	pros::lcd::set_text(1, "Hello PROS User!");
 
 	pros::lcd::register_btn1_cb(on_center_button);
+
+  //MVlib logger - straight from documentation example. See https://github.com/lewispinstein-hue/MotionView/blob/main/MVLib/README.md
+  auto& logger = mvlib::Logger::getInstance();
+  logger.setBuildDate(__DATE__);
+
+  // Attach your odom 
+  mvlib::setOdom(&chassis);
+  // Needed for accurate speed telemetry
+  logger.setRobot({
+    .leftDrivetrain = &intakeLeft,
+    .rightDrivetrain = &intakeRight
+  });
+
+  logger.start();
 }
 
 /**
