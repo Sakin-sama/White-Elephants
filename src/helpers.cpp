@@ -37,12 +37,12 @@ void motor_controls() {
 
 	// Rotate Claw
 	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-		claw.move(motor_velocity(100));
+		claw.move_absolute(90, 100);
 	}
 
 	//Rotate Claw Down
 	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-		claw.move(motor_velocity(-100));
+		claw.move_absolute(0, 100);
 	}
 
 	//Claw Brake

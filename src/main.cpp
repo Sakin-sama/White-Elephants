@@ -28,6 +28,8 @@ void initialize() {
 
 	pros::lcd::register_btn1_cb(on_center_button);
 
+	claw.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
+	
   //MVlib logger - straight from documentation example. See https://github.com/lewispinstein-hue/MotionView/blob/main/MVLib/README.md
   auto& logger = mvlib::Logger::getInstance();
   logger.setBuildDate(__DATE__);
