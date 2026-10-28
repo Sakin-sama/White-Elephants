@@ -1,47 +1,53 @@
 #include "globals.hpp"
 
+// INTAKE IS THE FRONT
+
 //Controller
 pros::Controller master(pros::E_CONTROLLER_MASTER);
 
 //Motors
   //Intake/Outake motors
-    pros::Motor Bottom(7, pros::v5::MotorGears::blue);
-    pros::Motor Top(6, pros::v5::MotorGears::blue);
+    pros::Motor intake(2, pros::v5::MotorGears::blue);
+    pros::Motor claw(6, pros::v5::MotorGears::green);
+    pros::MotorGroup lift({10,-1}, pros::v5::MotorGears::green);
+    
   //Drivetrain
-    pros::MotorGroup Right({8,9,10}, pros::v5::MotorGears::blue);
-    pros::MotorGroup Left({-1,-2,-3}, pros::v5::MotorGears::blue);
+    pros::MotorGroup intakeLeft({-12,-11}, pros::v5::MotorGears::green);
+    pros::MotorGroup intakeRight({19,20}, pros::v5::MotorGears::green);
 
 //Pneumatics
-  //"Hatch"
-        pros::adi::Pneumatics hatch('H', false);
-    //"Lid"
-        pros::adi::Pneumatics lid('F', false);
-    //"Thingy"
-        pros::adi::Pneumatics plateArms('G', false);
+  //Claw - Left/Right is relative to INTAKE
+    pros::adi::Pneumatics clawLeft('H', false);
+    pros::adi::Pneumatics clawRight('A', false);
 
 
 //Sensors
-  pros::Imu Imu(5);
+  pros::Imu imu(13);
   pros::Distance left(11);
-  pros::Distance right(20);
+  pros::Distance right(11);
+  pros::Distance clawSide(8);
+  pros::Distance intakeSide(7);
 
-//Tracking Wheel
-  pros::Rotation vertical_encoder(-4);
-  lemlib::TrackingWheel vertical_tracking_wheel(&vertical_encoder, lemlib::Omniwheel::NEW_2, -0.75);
+//Tracking Wheels
+  pros::Rotation verticalEncoder(-18);
+  lemlib::TrackingWheel verticalTrackingWheel(&verticalEncoder, lemlib::Omniwheel::NEW_2, -0.75);
+
+  pros::Rotation horizontalEncoder(-14);
+  lemlib::TrackingWheel horizontalTrackingWheel(&horizontalEncoder, lemlib::Omniwheel::NEW_2, -0.75);
 
 //Odometry Settings
   lemlib::OdomSensors Sensors(
-    &vertical_tracking_wheel, // vertical tracking wheel 1, set to null
+    &verticalTrackingWheel, // vertical tracking wheel 1, set to null
     nullptr, // vertical tracking wheel 2, set to nullptr as we are using IMEs
-    nullptr, // horizontal tracking wheel 1
+    &horizontalTrackingWheel, // horizontal tracking wheel 1
     nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
-    &Imu // inertial sensor
-    ); 
+    &imu // inertial sensor
+    );
 
 //Drivetrain
   lemlib::Drivetrain Drivetrain(
-    &Left,
-    &Right,
+    &intakeLeft,
+    &intakeRight,
     12.875, //measure
     lemlib::Omniwheel::NEW_325, //idk if it's new or old 325
     450, //gear ratio  * gear cartridge (200)

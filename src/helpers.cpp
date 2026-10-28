@@ -1,81 +1,63 @@
 #include "helpers.hpp"
 
-//Variables
-int intakeMotorSetting = 0;
-int intakeMotorSettingLast = 0;
+bool currentlyIntaking = false;
 
-//Takes a velocity percentage and outputs in the voltage format
 double motorVelocity(int givenVelocity) {
   return (std::max(std::min(((givenVelocity * 127) / 100), 127), -127));
 }
 
-//Controls the individual intake functions and what they do
-void motorControls() {
-  //Intake
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-      intakeMotorSetting = 1;
-    }
+void motor_controls() {
+	// Intake
+	if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+		if (currentlyIntaking) {
+			intake.brake();
+			currentlyIntaking = false;
+		} else {
+			intake.move(motorVelocity(100));
+			currentlyIntaking = true;
+		}
+	}
 
-    if (intakeMotorSetting == 1) {
-      Bottom.move(motorVelocity(100));
-      Top.move(motorVelocity(100));
-    }
+	// Lift Up
+	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+		lift.move(motorVelocity(60));
+	}
 
-  //Outtake
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-      intakeMotorSetting = 2;
-    }
+	//Lift Down
+	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+		lift.move(motorVelocity(-60));
+	}
 
-    if (intakeMotorSetting == 2) {
-      Bottom.move(motorVelocity(-100));
-      Top.move(motorVelocity(-100));
-    }
+	//Lift Brake
+	if (master.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_L1)) {
+		lift.brake();
+	} else if (master.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_L2)) {
+		lift.brake();
+	}
 
-  //Stop
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_B)) {
-      intakeMotorSetting = 3;
-    }
+	// Rotate Claw
+	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+		claw.move(100);
+	}
 
-    if (intakeMotorSetting == 3) {
-      Bottom.brake();
-      Top.brake();
-    }
-    
-    //Stop Top
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-      intakeMotorSetting = 4;
-    }
-    if (intakeMotorSetting == 4) {
-      Top.brake();
-    }
+	//Rotate Claw Down
+	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+		claw.move(-100);
+	}
 
-    //Stop Bottom
-    if (master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) {
-      intakeMotorSetting = 5;
-    }
-    if (intakeMotorSetting == 5) {
-      Bottom.brake();
-    }
-  }
+	//Claw Brake
+	if (master.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_R1)) {
+		claw.brake();
+	} else if (master.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_R2)) {
+		claw.brake();
+	}
+}
 
 
-//Controls the mandibles and their pneumatics
-void pneumaticControls() {
-  //Thingy
-  if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_LEFT)) {
-    plateArms.retract();
-  }
-  if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_RIGHT)) {
-    plateArms.extend();
-  }
-
-  //Lid / Descore
-  if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
-    lid.toggle();
-  }
-
-  //Hatch
-  if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
-    hatch.toggle();
-  }
+void pneumatic_controls() {
+	//Claw
+	if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)) {
+		clawLeft.toggle();
+		clawRight.toggle();
+	}
 }

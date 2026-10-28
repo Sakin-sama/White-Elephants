@@ -1,30 +1,35 @@
+
 #include "api.h"
 #include "lemlib/api.hpp"
+// #include "mvlib/api.hpp"
+// #include "mvlib/Optional/lemlib.hpp"
 
 //Controllers
   extern pros::Controller master;
 
 //Drivetrain Motors
-  extern pros::MotorGroup Right;
-  extern pros::MotorGroup Left;
+  extern pros::MotorGroup intakeLeft;
+  extern pros::MotorGroup intakeRight;
 
 //Motors
-  extern pros::Motor Bottom;
-  extern pros::Motor Top;
-
+  extern pros::Motor intake;
+  extern pros::Motor claw;
+  extern pros::MotorGroup lift;
+  
 //Pneumatics
-  extern pros::adi::Pneumatics hatch;
-  extern pros::adi::Pneumatics lid;
-  extern pros::adi::Pneumatics plateArms;
+  extern pros::adi::Pneumatics clawLeft;
+  extern pros::adi::Pneumatics clawRight;
 
 //Sensors
-  extern pros::Imu Imu;
+  extern pros::Imu imu;
   extern pros::Distance left;
   extern pros::Distance right;
 
 //Tracking Wheel
-  extern pros::Rotation vertical_encoder;
-  extern lemlib::TrackingWheel vertical_tracking_wheel;
+  extern pros::Rotation verticalEncoder;
+  extern lemlib::TrackingWheel verticalTrackingWheel;
+  extern pros::Rotation horizontalEncoder;
+  extern lemlib::TrackingWheel horizontalTrackingWheel;
 
 //Odom
   extern lemlib::OdomSensors Sensors;

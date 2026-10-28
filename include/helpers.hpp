@@ -4,8 +4,7 @@
 //Functions
 double motorVelocity(int givenVelocity);
 // void colorSorting(std::string goodColor);
-void motorControls();
-void pneumaticControls();
+void motor_controls();
+void pneumatic_controls();
 //Variables
-extern int intakeMotorSetting;
-extern int intakeMotorSettingLast;
+extern bool currentlyIntaking;

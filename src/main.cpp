@@ -9,10 +9,7 @@
  */
 void initialize() {
     pros::lcd::initialize(); // initialize brain screen
-    chassis.calibrate(); // calibrate sensors
-
-
-    // the default rate is 50. however, if you need to change the rate, you
+        // the default rate is 50. however, if you need to change the rate, you
     // can do the following.
     // lemlib::bufferedStdout().setRate(...);
     // If you use bluetooth or a wired connection, you will want to have a rate of 10ms
@@ -33,6 +30,23 @@ void initialize() {
             pros::delay(50);
         }
     });
+   	claw.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
+    lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	
+     //MVlib logger - straight from documentation example. See https://github.com/lewispinstein-hue/MotionView/blob/main/MVLib/README.md
+   //   auto& logger = mvlib::Logger::getInstance();
+   //   logger.setBuildDate(__DATE__);
+   // 
+   //   // Attach your odom 
+   //   mvlib::setOdom(&chassis);
+   //   // Needed for accurate speed telemetry
+   //   logger.setRobot({
+   //     .leftDrivetrain = &intakeLeft,
+   //     .rightDrivetrain = &intakeRight
+   //   });
+   // 
+   //   logger.start();
+
 }
 
 /**
@@ -66,14 +80,12 @@ void autonomous() {
  * Runs in driver control
  */
 void opcontrol() {
-  lid.retract();
   //Temporary code
-  fullRight();
   //Permanent code
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
     while (true) {
-      motorControls();
-      pneumaticControls();
+      motor_controls();
+      pneumatic_controls();
       // get joystick positions
       int leftY = 0.85 * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
       int rightX = 0.85 * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
