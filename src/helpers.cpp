@@ -60,13 +60,13 @@ if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && (lift.get_position() > 
 	}
 
 	// Rotate Claw
-	if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R1)) {
-		claw.move_absolute(270);
+	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+		claw.move_absolute(270.0, 100);
 	}
 
 	//Rotate Claw Down
-	if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_R2)) {
-		claw.move_absolute(0);
+	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+		claw.move_absolute(0.0, 100);
 	}
 
 	//Claw Brake
