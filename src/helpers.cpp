@@ -18,15 +18,27 @@ void motor_controls() {
 		}
 	}
 
-	// Lift Cycle
-	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+	// Lift Upcycle
+	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
 		if (lift.get_position() > 1440) {
 			while(lift.get_position() > 0) {
-				lift.move(-60);
+				lift.move(-90);
 			}
 		}
 		else {
-			lift.move(60);
+			lift.move(90);
+		}
+	}
+
+	//Lift Downcycle
+	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+		if (lift.get_position() < 0) {
+			while(lift.get_position() < 1440) {
+				lift.move(90);
+			}
+		}
+		else {
+			lift.move(-90);
 		}
 	}
 
