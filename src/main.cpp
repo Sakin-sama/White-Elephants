@@ -30,7 +30,7 @@ void initialize() {
             pros::delay(50);
         }
     });
-    
+
    	claw.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
    	lift.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
     lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
@@ -38,15 +38,15 @@ void initialize() {
      //MVlib logger - straight from documentation example. See https://github.com/lewispinstein-hue/MotionView/blob/main/MVLib/README.md
    //   auto& logger = mvlib::Logger::getInstance();
    //   logger.setBuildDate(__DATE__);
-   // 
-   //   // Attach your odom 
+   //
+   //   // Attach your odom
    //   mvlib::setOdom(&chassis);
    //   // Needed for accurate speed telemetry
    //   logger.setRobot({
    //     .leftDrivetrain = &intakeLeft,
    //     .rightDrivetrain = &intakeRight
    //   });
-   // 
+   //
    //   logger.start();
 
 }
@@ -89,8 +89,8 @@ void opcontrol() {
       motor_controls();
       pneumatic_controls();
       // get joystick positions
-      int leftY = 0.85 * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-      int rightX = 0.85 * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+      int leftY = master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+      int rightX = master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
       // move the chassis with curvature drive
       chassis.arcade(leftY, rightX);
       // delay to save resources

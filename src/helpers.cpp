@@ -13,7 +13,7 @@ void motor_controls() {
 			intake.brake();
 			currentlyIntaking = false;
 		} else {
-			intake.move(motorVelocity(100));
+			intake.move(motorVelocity(85));
 			currentlyIntaking = true;
 		}
 	}
