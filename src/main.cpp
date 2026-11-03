@@ -34,6 +34,7 @@ void initialize() {
    	claw.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
    	lift.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
     lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+    claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
     lift.tare_position();
      //MVlib logger - straight from documentation example. See https://github.com/lewispinstein-hue/MotionView/blob/main/MVLib/README.md
    //   auto& logger = mvlib::Logger::getInstance();
@@ -84,7 +85,7 @@ void autonomous() {
 void opcontrol() {
   //Temporary code
   //Permanent code
-  chassis.setBrakeMode(pros::E_MOTOR_BRAKE_HOLD);
+  chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
     while (true) {
       motor_controls();
       pneumatic_controls();
