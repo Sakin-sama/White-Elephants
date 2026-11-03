@@ -3,14 +3,14 @@
 // INTAKE IS THE FRONT
 
 //Controller
-pros::Controller master(pros::E_CONTROLLER_MASTER);
+	pros::Controller master(pros::E_CONTROLLER_MASTER);
 
 //Motors
   //Intake/Outake motors
     pros::Motor intake(2, pros::v5::MotorGears::blue);
     pros::Motor claw(6, pros::v5::MotorGears::green);
     pros::MotorGroup lift({10,-1}, pros::v5::MotorGears::green);
-    
+
   //Drivetrain
     pros::MotorGroup intakeLeft({-12,-11}, pros::v5::MotorGears::green);
     pros::MotorGroup intakeRight({19,20}, pros::v5::MotorGears::green);
@@ -22,37 +22,37 @@ pros::Controller master(pros::E_CONTROLLER_MASTER);
 
 
 //Sensors
-  pros::Imu imu(13);
-  pros::Distance left(11);
-  pros::Distance right(11);
-  pros::Distance clawSide(8);
-  pros::Distance intakeSide(7);
+	pros::Imu imu(13);
+  	pros::Distance left(11);
+   	pros::Distance right(11);
+   	pros::Distance clawSide(8);
+   	pros::Distance intakeSide(7);
 
 //Tracking Wheels
-  pros::Rotation verticalEncoder(-18);
-  lemlib::TrackingWheel verticalTrackingWheel(&verticalEncoder, lemlib::Omniwheel::NEW_2, -0.75);
+	pros::Rotation verticalEncoder(-18);
+	lemlib::TrackingWheel verticalTrackingWheel(&verticalEncoder, lemlib::Omniwheel::NEW_2, -0.75);
 
-  pros::Rotation horizontalEncoder(-14);
-  lemlib::TrackingWheel horizontalTrackingWheel(&horizontalEncoder, lemlib::Omniwheel::NEW_2, -0.75);
+	pros::Rotation horizontalEncoder(-14);
+	lemlib::TrackingWheel horizontalTrackingWheel(&horizontalEncoder, lemlib::Omniwheel::NEW_2, -0.75);
 
 //Odometry Settings
-  lemlib::OdomSensors Sensors(
-    &verticalTrackingWheel, // vertical tracking wheel 1, set to null
-    nullptr, // vertical tracking wheel 2, set to nullptr as we are using IMEs
-    &horizontalTrackingWheel, // horizontal tracking wheel 1
-    nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
-    &imu // inertial sensor
+  	lemlib::OdomSensors Sensors(
+    	&verticalTrackingWheel, // vertical tracking wheel 1, set to null
+	    nullptr, // vertical tracking wheel 2, set to nullptr as we are using IMEs
+	    &horizontalTrackingWheel, // horizontal tracking wheel 1
+	    nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
+	    &imu // inertial sensor
     );
 
 //Drivetrain
-  lemlib::Drivetrain Drivetrain(
-    &intakeLeft,
-    &intakeRight,
-    12.875, //measure
-    lemlib::Omniwheel::NEW_325, //idk if it's new or old 325
-    450, //gear ratio  * gear cartridge (200)
-    8 //idk
-  );
+	lemlib::Drivetrain Drivetrain(
+	    &intakeLeft,
+	    &intakeRight,
+	    12.875, //measure
+	    lemlib::Omniwheel::NEW_325, //idk if it's new or old 325
+	    333, //gear ratio  * gear cartridge (200)
+	    8 //idk
+	);
 
 //PID - these are the default constants, need to be callibrated
   // angular PID controller
@@ -96,11 +96,11 @@ pros::Controller master(pros::E_CONTROLLER_MASTER);
       );
 
 //Chassis
-  lemlib::Chassis chassis(
-    Drivetrain,
-    LateralController,
-    AngularController,
-    Sensors,
-    &ThrottleCurve,
-    &SteerCurve
-  );
+  	lemlib::Chassis chassis(
+	    Drivetrain,
+	    LateralController,
+	    AngularController,
+	    Sensors,
+	    &ThrottleCurve,
+	    &SteerCurve
+   	);
