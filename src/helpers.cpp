@@ -18,14 +18,16 @@ void motor_controls() {
 		}
 	}
 
-	// Lift Up
+	// Lift Cycle
 	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
-		lift.move(motorVelocity(60));
-	}
-
-	//Lift Down
-	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
-		lift.move(motorVelocity(-60));
+		if (lift.get_position() > 1440) {
+			while(lift.get_position() > 0) {
+				lift.move(-60);
+			}
+		}
+		else {
+			lift.move(60);
+		}
 	}
 
 	//Lift Brake

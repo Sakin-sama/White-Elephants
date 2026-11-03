@@ -30,9 +30,11 @@ void initialize() {
             pros::delay(50);
         }
     });
+    
    	claw.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
+   	lift.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
     lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	
+    lift.tare_position();
      //MVlib logger - straight from documentation example. See https://github.com/lewispinstein-hue/MotionView/blob/main/MVLib/README.md
    //   auto& logger = mvlib::Logger::getInstance();
    //   logger.setBuildDate(__DATE__);
