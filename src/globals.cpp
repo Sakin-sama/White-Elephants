@@ -32,7 +32,7 @@
 	pros::Rotation verticalEncoder(-18);
 	lemlib::TrackingWheel verticalTrackingWheel(&verticalEncoder, lemlib::Omniwheel::NEW_2, -0.75);
 
-	pros::Rotation horizontalEncoder(-14);
+	pros::Rotation horizontalEncoder(14);
 	lemlib::TrackingWheel horizontalTrackingWheel(&horizontalEncoder, lemlib::Omniwheel::NEW_2, -0.75);
 
 //Odometry Settings

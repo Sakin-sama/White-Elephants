@@ -8,6 +8,7 @@
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
+    chassis.calibrate(); // calibrate the chassis. This will calibrate the IMU and reset the odometry to 0,0,0
     pros::lcd::initialize(); // initialize brain screen
         // the default rate is 50. however, if you need to change the rate, you
     // can do the following.
