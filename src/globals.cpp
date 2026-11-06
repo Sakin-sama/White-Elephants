@@ -29,7 +29,7 @@
    	pros::Distance intakeSide(7);
 
 //Tracking Wheels
-	pros::Rotation verticalEncoder(-18);
+	pros::Rotation verticalEncoder(18);
 	lemlib::TrackingWheel verticalTrackingWheel(&verticalEncoder, lemlib::Omniwheel::NEW_2, -0.75);
 
 	pros::Rotation horizontalEncoder(14);

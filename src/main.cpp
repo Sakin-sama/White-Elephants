@@ -88,6 +88,10 @@ void autonomous() {
  */
 void opcontrol() {
   //Temporary code
+  // lift.move(motorVelocity(100));
+  // pros::delay(1000);
+  // lift.brake();
+  //chassis.moveToPoint(0,-10,3000);
   //Permanent code
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
     while (true) {
