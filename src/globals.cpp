@@ -12,8 +12,8 @@
     pros::MotorGroup lift({10,-1}, pros::v5::MotorGears::green);
 
   //Drivetrain
-    pros::MotorGroup intakeLeft({-12,-11}, pros::v5::MotorGears::green);
-    pros::MotorGroup intakeRight({19,20}, pros::v5::MotorGears::green);
+    pros::MotorGroup intakeRight({12,11}, pros::v5::MotorGears::green);
+    pros::MotorGroup intakeLeft({-19,-20}, pros::v5::MotorGears::green);
 
 //Pneumatics
   //Claw - Left/Right is relative to INTAKE
@@ -41,7 +41,7 @@
 	    nullptr, // vertical tracking wheel 2, set to nullptr as we are using IMEs
 	    &horizontalTrackingWheel, // horizontal tracking wheel 1
 	    nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
-	    &imu // inertial sensor
+	    nullptr // inertial sensor
     );
 
 //Drivetrain
