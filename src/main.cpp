@@ -25,6 +25,7 @@ void initialize() {
             pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
             pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
             pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
+            pros::lcd::print(3, "Lift: %f", lift.get_position()); // lift position
             // log position telemetry
             lemlib::telemetrySink()->info("Chassis pose: {}", chassis.getPose());
             // delay to save resources
@@ -37,6 +38,7 @@ void initialize() {
     lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
     claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
     lift.tare_position();
+    lift.set_zero_position(0);
     claw.tare_position();
     claw.set_zero_position(0);
     

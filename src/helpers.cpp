@@ -19,13 +19,12 @@ void motor_controls() {
 	}
 
 // Lift Up
-if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && (lift.get_position() < 1440)) {
+if ((master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) && (lift.get_position() < 1700)) {
 	lift.move(100);
-} 
-
-// lift Down
-if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && (lift.get_position() > 0)) {
+} else if ((master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) && (lift.get_position() > 0)) {
 	lift.move(-100);
+} else {
+	lift.brake();
 }
 	
 // 	// Lift Upcycle
@@ -52,27 +51,12 @@ if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && (lift.get_position() > 
 // 		}
 // 	}
 
-	//Lift Brake
-	if (master.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_L1)) {
-		lift.brake();
-	} else if (master.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_L2)) {
-		lift.brake();
-	}
-
 	// Rotate Claw
 	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-		claw.move_absolute(270.0, 100);
-	}
-
-	//Rotate Claw Down
-	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+		claw.move_absolute(315.0, 100);
+	} else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
 		claw.move_absolute(0.0, 100);
-	}
-
-	//Claw Brake
-	if (master.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_R1)) {
-		claw.brake();
-	} else if (master.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_R2)) {
+	} else {
 		claw.brake();
 	}
 }

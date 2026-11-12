@@ -22,7 +22,7 @@
 
 
 //Sensors
-	pros::Imu imu(13);
+	  pros::Imu imu(13);
   	pros::Distance left(11);
    	pros::Distance right(11);
    	pros::Distance clawSide(8);
