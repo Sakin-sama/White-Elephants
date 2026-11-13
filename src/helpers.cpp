@@ -1,7 +1,6 @@
 #include "helpers.hpp"
 
 bool currentlyIntaking = false;
-bool reverse = false;
 
 double motorVelocity(int givenVelocity) {
   return (std::max(std::min(((givenVelocity * 127) / 100), 127), -127));
@@ -19,15 +18,11 @@ void motor_controls() {
 		}
 	}
 
-	if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
-		reverse = true;
-		pros::delay(400);
-		reverse = false;
-	}
-
-	if (reverse) {
+	//Intake Reversed
+	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
 		intake.move(motorVelocity(-85))
 	}
+	
 
 	// Lift Up
 	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && (lift.get_position() < 1440)) {
