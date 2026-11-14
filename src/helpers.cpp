@@ -24,14 +24,13 @@ void motor_controls() {
 	}
 	
 
-	// Lift Up
-	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && (lift.get_position() < 1440)) {
+	// Lift
+	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && (lift.get_position() < 1700)) {
 		lift.move(100);
-	} 
-	
-	// lift Down
-	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && (lift.get_position() > 0)) {
+	} else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && (lift.get_position() > 0)) {
 		lift.move(-100);
+	} else {
+		lift.brake();
 	}
 		
 	// 	// Lift Upcycle
@@ -57,21 +56,6 @@ void motor_controls() {
 	// 			lift.move(-90);
 	// 		}
 	// 	}
-	
-	//Lift Brake
-	if (master.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_L1)) {
-		lift.brake();
-	} else if (master.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_L2)) {
-		lift.brake();
-	}
-// Lift Up
-if ((master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) && (lift.get_position() < 1700)) {
-	lift.move(100);
-} else if ((master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) && (lift.get_position() > 0)) {
-	lift.move(-100);
-} else {
-	lift.brake();
-}
 	
 // 	// Lift Upcycle
 // 	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
