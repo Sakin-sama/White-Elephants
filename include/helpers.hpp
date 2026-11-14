@@ -3,7 +3,6 @@
 
 //Functions
 double motorVelocity(int givenVelocity);
-float drivetrainSpeedModifier(bool chosenButton);
 void motor_controls();
 void pneumatic_controls();
 //Variables

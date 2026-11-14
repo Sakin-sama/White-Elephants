@@ -8,15 +8,6 @@ float drivetrainSpeedConstant = 0.1;
 	return (std::max(std::min(((givenVelocity * 127) / 100), 127), -127));
 	}
 
-//Slowed driving
-	float drivetrainSpeedModifier(bool chosenButton) {
-		if (chosenButton) {
-			return drivetrainSpeedConstant;
-		} else {
-			return 1;
-		}
-	}
-
 void motor_controls() {
 	//Intake (part of motor controls)
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
