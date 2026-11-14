@@ -1,7 +1,7 @@
 #include "helpers.hpp"
 
 bool currentlyIntaking = false;
-float drivetrainSpeedConstant = 0.8;
+float drivetrainSpeedConstant = 0.1;
 
 //Motor velocity conversion
 	double motorVelocity(int givenVelocity) {
