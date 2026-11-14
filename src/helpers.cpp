@@ -16,11 +16,15 @@ void motor_controls() {
 			intake.move(motorVelocity(85));
 			currentlyIntaking = true;
 		}
-	}
-
-	//Intake Reversed
-	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-		intake.move(motorVelocity(-85))
+	} else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
+		while (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+			intake.move(motorVelocity(-85));
+		}
+		if (currentlyIntaking) {
+			intake.move(motorVelocity(85));
+		} else {
+			intake.brake();
+		}
 	}
 	
 
