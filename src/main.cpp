@@ -107,7 +107,6 @@ void opcontrol() {
       // get joystick positions
       int leftY = drivetrainSpeedModifier(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP)) * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
       int rightX = drivetrainSpeedModifier(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP)) * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-      //Hi there
       // move the chassis with curvature drive
       chassis.arcade(leftY, rightX);
       // delay to save resources
