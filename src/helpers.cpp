@@ -1,9 +1,19 @@
 #include "helpers.hpp"
 
 bool currentlyIntaking = false;
+float drivetrainSpeedConstant = 0.8;
 
 double motorVelocity(int givenVelocity) {
   return (std::max(std::min(((givenVelocity * 127) / 100), 127), -127));
+}
+
+//Slowed driving
+float drivetrainSpeedModifier(bool chosenButton) {
+	if (chosenButton) {
+		return drivetrainSpeedConstant;
+	} else {
+		return 1;
+	}
 }
 
 void motor_controls() {
@@ -27,7 +37,6 @@ void motor_controls() {
 		}
 	}
 	
-
 	// Lift
 	if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && (lift.get_position() < 1700)) {
 		lift.move(100);

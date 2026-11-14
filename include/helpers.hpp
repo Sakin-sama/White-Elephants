@@ -3,8 +3,9 @@
 
 //Functions
 double motorVelocity(int givenVelocity);
-// void colorSorting(std::string goodColor);
+float drivetrainSpeedModifier(bool chosenButton);
 void motor_controls();
 void pneumatic_controls();
 //Variables
 extern bool currentlyIntaking;
+extern float drivetrainSpeedConstant;
