@@ -20,9 +20,9 @@ float currentDriveSpeedMultiplier = 1.0;
 		}
 	}
 
-void motor_controls() {
+void motor_controls(struct motorControlOptions options) {
 	//Intake (part of motor controls)
-		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
+		if (options.intakeForward) {
 			if (isIntaking) {
 				intake.brake();
 				isIntaking = false;
@@ -30,8 +30,8 @@ void motor_controls() {
 				intake.move(motorVelocity(85));
 				isIntaking = true;
 			}
-		} else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
-			while (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+		} else if (options.intakeBackward) {
+			while (options.intakeBackward) {
 				intake.move(motorVelocity(-85));
 			}
 			if (isIntaking) {
@@ -42,18 +42,18 @@ void motor_controls() {
 		}
 	
 	//Lift (part of motor controls)
-		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && (lift.get_position() < 1700)) {
+		if ((options.liftUp) && (lift.get_position() < 1700)) {
 			lift.move(100);
-		} else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && (lift.get_position() > 0)) {
+		} else if ((options.liftDown) && (lift.get_position() > 0)) {
 			lift.move(-100);
 		} else {
 			lift.brake();
 		}
 
 	// Rotate Claw (part of motor controls)
-		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
+		if (options.clawUp) {
 			claw.move_absolute(315.0, 100);
-		} else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
+		} else if (options.clawDown) {
 			claw.move_absolute(0.0, 100);
 		} else {
 			claw.brake();

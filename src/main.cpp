@@ -104,7 +104,14 @@ void opcontrol() {
   //Permanent code
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
     while (true) {
-      motor_controls();
+      motor_controls({
+        .intakeForward = master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B),
+        .intakeBackward = master.get_digital(pros::E_CONTROLLER_DIGITAL_A),
+        .liftUp = master.get_digital(pros::E_CONTROLLER_DIGITAL_L1),
+        .liftDown = master.get_digital(pros::E_CONTROLLER_DIGITAL_L2),
+        .clawUp = master.get_digital(pros::E_CONTROLLER_DIGITAL_R1),
+        .clawDown = master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)
+      });
       pneumatic_controls();
       // get joystick positions
       int leftY = drivetrainSpeedModifier(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
