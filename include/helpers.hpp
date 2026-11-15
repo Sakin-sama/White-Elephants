@@ -7,5 +7,5 @@ float drivetrainSpeedModifier(bool chosenButton);
 void motor_controls();
 void pneumatic_controls();
 //Variables
-extern bool currentlyIntaking;
+extern bool isIntaking;
 extern float drivetrainSpeedConstant;

@@ -1,7 +1,8 @@
 #include "helpers.hpp"
 
-bool currentlyIntaking = false;
+bool isIntaking = false;
 float drivetrainSpeedConstant = 0.85;
+float currentDriveSpeedMultiplier = 1.0;
 
 //Motor velocity conversion
 	double motorVelocity(int givenVelocity) {
@@ -11,8 +12,10 @@ float drivetrainSpeedConstant = 0.85;
 //Slowed driving
 	float drivetrainSpeedModifier(bool chosenButton) {
 		if (chosenButton) {
+			currentDriveSpeedMultiplier = drivetrainSpeedConstant;
 			return drivetrainSpeedConstant;
 		} else {
+			currentDriveSpeedMultiplier = 1;
 			return 1;
 		}
 	}
@@ -20,18 +23,18 @@ float drivetrainSpeedConstant = 0.85;
 void motor_controls() {
 	//Intake (part of motor controls)
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
-			if (currentlyIntaking) {
+			if (isIntaking) {
 				intake.brake();
-				currentlyIntaking = false;
+				isIntaking = false;
 			} else {
 				intake.move(motorVelocity(85));
-				currentlyIntaking = true;
+				isIntaking = true;
 			}
 		} else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
 			while (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
 				intake.move(motorVelocity(-85));
 			}
-			if (currentlyIntaking) {
+			if (isIntaking) {
 				intake.move(motorVelocity(85));
 			} else {
 				intake.brake();

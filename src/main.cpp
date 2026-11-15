@@ -26,6 +26,8 @@ void initialize() {
             pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
             pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
             pros::lcd::print(3, "Lift: %f", lift.get_position()); // lift position
+            pros::lcd::print(4, "isIntaking: %f", isIntaking); // is the intake running
+            pros::lcd::print(5, "driveSpeed: %f", currentDriveSpeedMultiplier); // what speed is the drivetrain running at
             // log position telemetry
             lemlib::telemetrySink()->info("Chassis pose: {}", chassis.getPose());
             // delay to save resources

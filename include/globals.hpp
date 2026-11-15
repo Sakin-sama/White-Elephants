@@ -4,6 +4,9 @@
 // #include "mvlib/api.hpp"
 // #include "mvlib/Optional/lemlib.hpp"
 
+//Variables
+  extern float currentDriveSpeedMultiplier;
+
 //Controllers
   extern pros::Controller master;
 
