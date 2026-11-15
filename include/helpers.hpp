@@ -6,5 +6,5 @@ double motorVelocity(int givenVelocity);
 void motor_controls();
 void pneumatic_controls();
 //Variables
-extern bool currentlyIntaking;
+extern bool isIntaking;
 extern float drivetrainSpeedConstant;

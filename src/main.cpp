@@ -1,5 +1,4 @@
 #include "main.h"
-#include "helpers.hpp"
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -26,6 +25,7 @@ void initialize() {
             pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
             pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
             pros::lcd::print(3, "Lift: %f", lift.get_position()); // lift position
+            pros::lcd::print(4, "isIntaking: %f", isIntaking); // is the intake running
             // log position telemetry
             lemlib::telemetrySink()->info("Chassis pose: {}", chassis.getPose());
             // delay to save resources
@@ -100,16 +100,16 @@ void opcontrol() {
   //Temporary code
 
   //Permanent code
-  chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
-    while (true) {
-      motor_controls();
-      pneumatic_controls();
-      // get joystick positions
-      int leftY = 0.90 * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-      int rightX = 0.90 * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-      // move the chassis with curvature drive
-      chassis.arcade(leftY, rightX);
-      // delay to save resources
-      pros::delay(10);
-  }
+    chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+      while (true) {
+        motor_controls();
+        pneumatic_controls();
+        // get joystick positions
+        int leftY = 0.90 * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+        int rightX = 0.90 * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+        // move the chassis with curvature drive
+        chassis.arcade(leftY, rightX);
+        // delay to save resources
+        pros::delay(10);
+    }
 }
