@@ -31,9 +31,8 @@ void motor_controls() {
 				isIntaking = true;
 			}
 		} else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
-			while (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
 				intake.move(motorVelocity(-85));
-			}
+		} else if (master.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_A)) {
 			if (isIntaking) {
 				intake.move(motorVelocity(85));
 			} else {
