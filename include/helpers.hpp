@@ -13,8 +13,16 @@ struct motorControlOptions {
     int clawUp = 0;
     int clawDown = 0;
 };
+struct motorSpeedOptions {
+    double intakeSpeed = 127;
+    double liftSpeed = 127;
+    double clawSpeed = 127;
+};
 //Functions
 double motorVelocity(int givenVelocity);
 float drivetrainSpeedModifier(bool chosenButton);
-void motor_controls(struct motorControlOptions options = {});
+void motor_controls(struct motorControlOptions options = {}, struct motorSpeedOptions speedOptions = {});
+void intakeControl(bool forward, bool backward, double speed);
+void liftControl(bool up, bool down, double speed);
+void clawControl(bool up, bool down, double speed);
 void pneumatic_controls();

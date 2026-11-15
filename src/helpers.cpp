@@ -20,44 +20,66 @@ float currentDriveSpeedMultiplier = 1.0;
 		}
 	}
 
-void motor_controls(struct motorControlOptions options) {
-	//Intake (part of motor controls)
-		if (options.intakeForward) {
-			if (isIntaking) {
-				intake.brake();
-				isIntaking = false;
-			} else {
-				intake.move(motorVelocity(85));
-				isIntaking = true;
-			}
-		} else if (options.intakeBackward) {
-			while (options.intakeBackward) {
-				intake.move(motorVelocity(-85));
-			}
-			if (isIntaking) {
-				intake.move(motorVelocity(85));
-			} else {
-				intake.brake();
-			}
-		}
-	
-	//Lift (part of motor controls)
-		if ((options.liftUp) && (lift.get_position() < 1700)) {
-			lift.move(100);
-		} else if ((options.liftDown) && (lift.get_position() > 0)) {
-			lift.move(-100);
+//Intake function
+void intakeControl(bool forward, bool backward, double speed) {
+	if (forward) {
+		if (isIntaking) {
+			isIntaking = false;
 		} else {
-			lift.brake();
+			isIntaking = true;
 		}
+	} else if (backward) {
+		intake.move(-speed);
+	} else {
+		if (isIntaking) {
+			intake.move(speed);
+		} else {
+			intake.brake();
+		}
+	}
+}
 
-	// Rotate Claw (part of motor controls)
-		if (options.clawUp) {
-			claw.move_absolute(315.0, 100);
-		} else if (options.clawDown) {
-			claw.move_absolute(0.0, 100);
-		} else {
-			claw.brake();
-		}
+//Lift function
+void liftControl(bool up, bool down, double speed) {
+	if (up) {
+		lift.move_absolute(1700.0, speed);
+	} else if (down) {
+		lift.move_absolute(0.0, -speed);
+	} else {
+		lift.brake();
+	}
+}
+
+//Claw function
+void clawControl(bool up, bool down, double speed) {
+	if (up) {
+		claw.move_absolute(315.0, speed);
+	} else if (down) {
+		claw.move_absolute(0.0, -speed);
+	} else {
+		claw.brake();
+	}
+}
+
+//Motor controls
+void motor_controls(struct motorControlOptions options, struct motorSpeedOptions speedOptions) {
+	intakeControl(
+		options.intakeForward,
+		options.intakeBackward,
+		motorVelocity(speedOptions.intakeSpeed)
+	);
+	
+	liftControl(
+		options.liftUp,
+		options.liftDown,
+		motorVelocity(speedOptions.liftSpeed)
+	);
+
+	clawControl(
+		options.clawUp,
+		options.clawDown,
+		motorVelocity(speedOptions.clawSpeed)
+	);
 }
 
 

@@ -111,6 +111,10 @@ void opcontrol() {
         .liftDown = master.get_digital(pros::E_CONTROLLER_DIGITAL_L2),
         .clawUp = master.get_digital(pros::E_CONTROLLER_DIGITAL_R1),
         .clawDown = master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)
+      },{
+        .intakeSpeed = motorVelocity(85),
+        .liftSpeed = motorVelocity(90),
+        .clawSpeed = motorVelocity(80)
       });
       pneumatic_controls();
       // get joystick positions
