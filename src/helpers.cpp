@@ -20,50 +20,59 @@ float currentDriveSpeedMultiplier = 1.0;
 		}
 	}
 
-void motor_controls() {
-	//Intake (part of motor controls)
+//Intake function
+	void intakeControl() {
 		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B)) {
 			if (isIntaking) {
-				intake.brake();
 				isIntaking = false;
 			} else {
-				intake.move(motorVelocity(85));
 				isIntaking = true;
 			}
-		} else if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
+		} else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
 				intake.move(motorVelocity(-85));
-		} else if (master.get_digital_new_release(pros::E_CONTROLLER_DIGITAL_A)) {
+		} else {
 			if (isIntaking) {
 				intake.move(motorVelocity(85));
 			} else {
 				intake.brake();
 			}
 		}
-	
-	//Lift (part of motor controls)
-		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1) && (lift.get_position() < 1700)) {
-			lift.move(100);
-		} else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2) && (lift.get_position() > 0)) {
-			lift.move(-100);
+	}
+
+//Lift function
+	void liftControl() {
+		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L1)) {
+			lift.move_absolute(1700, motorVelocity(100));
+		} else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_L2)) {
+			lift.move_absolute(0, motorVelocity(-100));
 		} else {
 			lift.brake();
 		}
+	}
 
-	// Rotate Claw (part of motor controls)
+//Claw function
+	void clawControl() {
 		if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R1)) {
-			claw.move_absolute(315.0, 100);
+			claw.move_absolute(315.0, motorVelocity(100));
 		} else if (master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)) {
-			claw.move_absolute(0.0, 100);
+			claw.move_absolute(0.0, motorVelocity(-100));
 		} else {
 			claw.brake();
 		}
-}
+	}
 
+//Motor controls
+	void motor_controls() {
+		intakeControl();
+		liftControl();
+		clawControl();
+	}
 
-void pneumatic_controls() {
-	//Claw
-		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)) {
-			clawLeft.toggle();
-			clawRight.toggle();
-		}
-}
+//Pneumatic controls
+	void pneumatic_controls() {
+		//Claw
+			if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)) {
+				clawLeft.toggle();
+				clawRight.toggle();
+			}
+	}
