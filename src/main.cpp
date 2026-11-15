@@ -105,8 +105,8 @@ void opcontrol() {
       motor_controls();
       pneumatic_controls();
       // get joystick positions
-      int leftY = drivetrainSpeedModifier(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP)) * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-      int rightX = drivetrainSpeedModifier(master.get_digital(pros::E_CONTROLLER_DIGITAL_UP)) * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+      int leftY = drivetrainSpeedModifier(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+      int rightX = drivetrainSpeedModifier(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
       // move the chassis with curvature drive
       chassis.arcade(leftY, rightX);
       // delay to save resources
