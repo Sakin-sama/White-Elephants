@@ -21,6 +21,7 @@ void initialize() {
     // thread to for brain screen and position logging
     pros::Task screenTask([&]() {
         while (true) {
+          if (showStats) {
             // print robot location to the brain screen
             pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
             pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
@@ -32,6 +33,7 @@ void initialize() {
             lemlib::telemetrySink()->info("Chassis pose: {}", chassis.getPose());
             // delay to save resources
             pros::delay(50);
+          }
         }
     });
 
@@ -104,7 +106,9 @@ void opcontrol() {
   //Permanent code
   chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
     while (true) {
-      motor_controls({
+      motorControls({
+        //Controls options for motors
+        //remove for no control of said motor
         .intakeForward = master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B),
         .intakeBackward = master.get_digital(pros::E_CONTROLLER_DIGITAL_A),
         .liftUp = master.get_digital(pros::E_CONTROLLER_DIGITAL_L1),
@@ -112,11 +116,13 @@ void opcontrol() {
         .clawUp = master.get_digital(pros::E_CONTROLLER_DIGITAL_R1),
         .clawDown = master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)
       },{
+        //Speed options for the motors
+        //remove for default speed of 127 for said motor
         .intakeSpeed = motorVelocity(85),
         .liftSpeed = motorVelocity(90),
         .clawSpeed = motorVelocity(80)
       });
-      pneumatic_controls();
+      pneumaticControls();
       // get joystick positions
       int leftY = drivetrainSpeedModifier(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
       int rightX = drivetrainSpeedModifier(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);

@@ -21,72 +21,77 @@ float currentDriveSpeedMultiplier = 1.0;
 	}
 
 //Intake function
-void intakeControl(bool forward, bool backward, double speed) {
-	if (forward) {
-		if (isIntaking) {
-			isIntaking = false;
+	void intakeControl(bool forward, bool backward, double speed) {
+		if (forward) {
+			if (isIntaking) {
+				isIntaking = false;
+			} else {
+				isIntaking = true;
+			}
+		} else if (backward) {
+			intake.move(-speed);
 		} else {
-			isIntaking = true;
-		}
-	} else if (backward) {
-		intake.move(-speed);
-	} else {
-		if (isIntaking) {
-			intake.move(speed);
-		} else {
-			intake.brake();
+			if (isIntaking) {
+				intake.move(speed);
+			} else {
+				intake.brake();
+			}
 		}
 	}
-}
 
 //Lift function
-void liftControl(bool up, bool down, double speed) {
-	if (up) {
-		lift.move_absolute(1700.0, speed);
-	} else if (down) {
-		lift.move_absolute(0.0, -speed);
-	} else {
-		lift.brake();
+	void liftControl(bool up, bool down, double speed) {
+		if (up) {
+			lift.move_absolute(1700.0, speed);
+		} else if (down) {
+			lift.move_absolute(0.0, -speed);
+		} else {
+			lift.brake();
+		}
 	}
-}
 
 //Claw function
-void clawControl(bool up, bool down, double speed) {
-	if (up) {
-		claw.move_absolute(315.0, speed);
-	} else if (down) {
-		claw.move_absolute(0.0, -speed);
-	} else {
-		claw.brake();
+	void clawControl(bool up, bool down, double speed) {
+		if (up) {
+			claw.move_absolute(315.0, speed);
+		} else if (down) {
+			claw.move_absolute(0.0, -speed);
+		} else {
+			claw.brake();
+		}
 	}
-}
 
 //Motor controls
-void motor_controls(struct motorControlOptions options, struct motorSpeedOptions speedOptions) {
-	intakeControl(
-		options.intakeForward,
-		options.intakeBackward,
-		motorVelocity(speedOptions.intakeSpeed)
-	);
-	
-	liftControl(
-		options.liftUp,
-		options.liftDown,
-		motorVelocity(speedOptions.liftSpeed)
-	);
+	void motorControls(struct motorControlOptions options, struct motorSpeedOptions speedOptions) {
+		intakeControl(
+			options.intakeForward,
+			options.intakeBackward,
+			motorVelocity(speedOptions.intakeSpeed)
+		);
+		
+		liftControl(
+			options.liftUp,
+			options.liftDown,
+			motorVelocity(speedOptions.liftSpeed)
+		);
 
-	clawControl(
-		options.clawUp,
-		options.clawDown,
-		motorVelocity(speedOptions.clawSpeed)
-	);
-}
+		clawControl(
+			options.clawUp,
+			options.clawDown,
+			motorVelocity(speedOptions.clawSpeed)
+		);
+	}
 
+//Pneumatic controls
+	void pneumaticControls() {
+		//Claw
+			if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)) {
+				clawLeft.toggle();
+				clawRight.toggle();
+			}
+	}
 
-void pneumatic_controls() {
-	//Claw
-		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)) {
-			clawLeft.toggle();
-			clawRight.toggle();
-		}
-}
+//Auton selector
+	void autonSelector() {
+
+	}

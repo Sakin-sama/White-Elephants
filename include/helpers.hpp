@@ -21,8 +21,8 @@ struct motorSpeedOptions {
 //Functions
 double motorVelocity(int givenVelocity);
 float drivetrainSpeedModifier(bool chosenButton);
-void motor_controls(struct motorControlOptions options = {}, struct motorSpeedOptions speedOptions = {});
+void motorControls(struct motorControlOptions options = {}, struct motorSpeedOptions speedOptions = {});
 void intakeControl(bool forward, bool backward, double speed);
 void liftControl(bool up, bool down, double speed);
 void clawControl(bool up, bool down, double speed);
-void pneumatic_controls();
+void pneumaticControls();

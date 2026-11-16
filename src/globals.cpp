@@ -2,6 +2,8 @@
 
 // INTAKE IS THE FRONT
 
+//Variable definitions
+bool showStats = false;
 //Controller
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
 
