@@ -5,6 +5,7 @@
 extern bool isIntaking;
 extern float drivetrainSpeedConstant;
 extern int autonSelection;
+extern int autonSelectionScrollAmount;
 //Arrays
 extern std::array<std::string, 4> autons;
 extern void (*autonFunctions[])();

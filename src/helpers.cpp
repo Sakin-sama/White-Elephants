@@ -6,6 +6,7 @@ bool isIntaking = false;
 float drivetrainSpeedConstant = 0.85;
 float currentDriveSpeedMultiplier = 1.0;
 int autonSelection = 0;
+int autonSelectionScrollAmount = 0;
 //Arrays
 std::array<std::string, 4> autons = {
     "None",
@@ -111,26 +112,45 @@ void (*autonFunctions[])() = {
 //Auton selector
 	void autonSelector() {
 		while (!master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-			for (int i = 0; i < autons.size(); i++) {
-				if (autonSelection == i) {
-					pros::lcd::print(i,">%s",autons[i].c_str());
-				} else {
-					pros::lcd::print(i," %s",autons[i].c_str());
+			if (autons.size() > 0) {
+				//Prints autons
+				pros::lcd::clear();
+				for (int i = 0; i < std::min(autons.size(), size_t(5)); i++) {
+					if (autonSelection == i) {
+						pros::lcd::print(i,">%s",autons[i + autonSelectionScrollAmount].c_str());
+					} else {
+						pros::lcd::print(i," %s",autons[i + autonSelectionScrollAmount].c_str());
+					}
 				}
-			}
-			if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
-				if (autonSelection < autons.size() - 1) {
-					autonSelection++;
-				} else {
-					autonSelection = 0;
+				//Moves selection up
+				if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+					if (autonSelection > 0) {
+						autonSelection--;
+					} else if (autonSelectionScrollAmount > 0) {
+						autonSelectionScrollAmount--;
+					} else {
+						autonSelection = std::min(autons.size(), size_t(5)) - 1;
+						autonSelectionScrollAmount = std::max(int(autons.size()) - 5, 0);
+					}
 				}
-			}
-			if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
-				if (autonSelection > 0) {
-					autonSelection--;
-				} else {
-					autonSelection = autons.size() - 1;
+				//Moves selection down
+				if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+					if (autonSelection < std::min(autons.size(), size_t(5)) - 1) {
+						autonSelection++;
+					} else if (5 + autonSelectionScrollAmount < autons.size()) {
+						autonSelectionScrollAmount++;
+					} else {
+						autonSelection = 0;
+						autonSelectionScrollAmount = 0;
+					}
 				}
+			} else {
+				//No autons found
+				pros::lcd::clear();
+				pros::lcd::print(0,"No autons found");
+				pros::lcd::print(1,":|");
 			}
+			pros::delay(50);
 		}
 	}
+
