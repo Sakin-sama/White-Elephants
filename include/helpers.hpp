@@ -4,6 +4,10 @@
 //Variables
 extern bool isIntaking;
 extern float drivetrainSpeedConstant;
+extern int autonSelection;
+//Arrays
+extern std::array<std::string, 4> autons;
+extern void (*autonFunctions[])();
 //Structs
 struct motorControlOptions {
     int intakeForward = 0;
@@ -26,3 +30,7 @@ void intakeControl(bool forward, bool backward, double speed);
 void liftControl(bool up, bool down, double speed);
 void clawControl(bool up, bool down, double speed);
 void pneumaticControls();
+int autonSelector();
+void teamworkAuton();
+void skillsAuton();
+void skillsParkAuton();

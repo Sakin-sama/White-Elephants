@@ -1,6 +1,8 @@
 
 #include "api.h"
 #include "lemlib/api.hpp"
+#include <array>
+#include <string>
 // #include "mvlib/api.hpp"
 // #include "mvlib/Optional/lemlib.hpp"
 

@@ -73,7 +73,7 @@ void disabled() {
  * runs after initialize if the robot is connected to field control
  */
 void competition_initialize() {
-  //autonSelector();
+  (*autonFunctions[autonSelector()])();
 }
 
 // get a path used for pure pursuit

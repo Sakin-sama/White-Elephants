@@ -1,8 +1,25 @@
 #include "helpers.hpp"
+#include "pros/misc.h"
 
+//Variables
 bool isIntaking = false;
 float drivetrainSpeedConstant = 0.85;
 float currentDriveSpeedMultiplier = 1.0;
+int autonSelection = 0;
+//Arrays
+std::array<std::string, 4> autons = {
+    "None",
+    "Teamwork",
+    "Skills full",
+    "Skills park"
+};
+
+void (*autonFunctions[])() = {
+	nullptr,
+	teamworkAuton,
+	skillsAuton,
+	skillsParkAuton
+};
 
 //Motor velocity conversion
 	double motorVelocity(int givenVelocity) {
@@ -92,6 +109,29 @@ float currentDriveSpeedMultiplier = 1.0;
 	}
 
 //Auton selector
-	void autonSelector() {
-
+	int autonSelector() {
+		for (int i = 0; i < autons.size(); i++) {
+			if (autonSelection == i) {
+			pros::lcd::print(i,">%s",autons[i].c_str());
+			} else {
+				pros::lcd::print(i," %s",autons[i].c_str());
+			}
+		}
+		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+			if (autonSelection < autons.size() - 1) {
+			autonSelection++;
+			} else {
+				autonSelection = 0;
+			}
+		}
+		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+			if (autonSelection > 0) {
+				autonSelection--;
+			} else {
+				autonSelection = autons.size() - 1;
+			}
+		}
+		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
+			return autonSelection;
+		}
 	}
