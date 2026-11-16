@@ -110,17 +110,17 @@ void (*autonFunctions[])() = {
 
 //Auton selector
 	void autonSelector() {
-		while (!master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
+		while (!master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
 			for (int i = 0; i < autons.size(); i++) {
 				if (autonSelection == i) {
-				pros::lcd::print(i,">%s",autons[i].c_str());
+					pros::lcd::print(i,">%s",autons[i].c_str());
 				} else {
 					pros::lcd::print(i," %s",autons[i].c_str());
 				}
 			}
 			if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
 				if (autonSelection < autons.size() - 1) {
-				autonSelection++;
+					autonSelection++;
 				} else {
 					autonSelection = 0;
 				}

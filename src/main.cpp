@@ -73,7 +73,9 @@ void disabled() {
  * runs after initialize if the robot is connected to field control
  */
 void competition_initialize() {
+  showStats = false;
   autonSelector();
+  showStats = true;
 }
 
 // get a path used for pure pursuit
@@ -86,7 +88,6 @@ ASSET(example_txt); // '.' replaced with "_" to make c++ happy
  * This is an example autonomous routine which demonstrates a lot of the features LemLib has to offer
  */
 void autonomous() {
-  //runSelectedAuton();
   autonFunctions[autonSelection]();
 }
 
