@@ -30,7 +30,7 @@ void intakeControl(bool forward, bool backward, double speed);
 void liftControl(bool up, bool down, double speed);
 void clawControl(bool up, bool down, double speed);
 void pneumaticControls();
-int autonSelector();
+void autonSelector();
 void teamworkAuton();
 void skillsAuton();
 void skillsParkAuton();

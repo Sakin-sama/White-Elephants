@@ -73,7 +73,7 @@ void disabled() {
  * runs after initialize if the robot is connected to field control
  */
 void competition_initialize() {
-  (*autonFunctions[autonSelector()])();
+  autonSelector();
 }
 
 // get a path used for pure pursuit
@@ -87,14 +87,7 @@ ASSET(example_txt); // '.' replaced with "_" to make c++ happy
  */
 void autonomous() {
   //runSelectedAuton();
-    clawLeft.toggle();
-		clawRight.toggle();
-    lift.move(motorVelocity(100));
-    pros::delay(500);
-    lift.brake();
-    chassis.moveToPoint(-10,0,750,{.minSpeed = 127});
-    pros::delay(2000);
-    chassis.moveToPoint(10,0,3000,{.minSpeed = 127});
+  autonFunctions[autonSelection]();
 }
 
 /**

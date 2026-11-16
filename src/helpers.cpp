@@ -109,29 +109,28 @@ void (*autonFunctions[])() = {
 	}
 
 //Auton selector
-	int autonSelector() {
-		for (int i = 0; i < autons.size(); i++) {
-			if (autonSelection == i) {
-			pros::lcd::print(i,">%s",autons[i].c_str());
-			} else {
-				pros::lcd::print(i," %s",autons[i].c_str());
+	void autonSelector() {
+		while (!master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
+			for (int i = 0; i < autons.size(); i++) {
+				if (autonSelection == i) {
+				pros::lcd::print(i,">%s",autons[i].c_str());
+				} else {
+					pros::lcd::print(i," %s",autons[i].c_str());
+				}
 			}
-		}
-		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
-			if (autonSelection < autons.size() - 1) {
-			autonSelection++;
-			} else {
-				autonSelection = 0;
+			if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
+				if (autonSelection < autons.size() - 1) {
+				autonSelection++;
+				} else {
+					autonSelection = 0;
+				}
 			}
-		}
-		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
-			if (autonSelection > 0) {
-				autonSelection--;
-			} else {
-				autonSelection = autons.size() - 1;
+			if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
+				if (autonSelection > 0) {
+					autonSelection--;
+				} else {
+					autonSelection = autons.size() - 1;
+				}
 			}
-		}
-		if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_A)) {
-			return autonSelection;
 		}
 	}
