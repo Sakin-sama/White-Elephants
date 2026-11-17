@@ -45,8 +45,8 @@ void (*autonFunctions[])() = {
 	}
 
 //Slowed driving
-	float drivetrainSpeedModifier(bool chosenButton) {
-		if (chosenButton) {
+	float drivetrainSpeedModifier(pros::controller_digital_e_t chosenButton) {
+		if (master.get_digital(chosenButton)) {
 			currentDriveSpeedMultiplier = drivetrainSpeedConstant;
 			return drivetrainSpeedConstant;
 		} else {
@@ -97,7 +97,7 @@ void (*autonFunctions[])() = {
 	}
 
 //Motor controls
-	void motorControls(struct motorControlOptions options, struct motorSpeedOptions speedOptions) {
+	void motorControls(const struct motorControlOptions options, const struct motorSpeedOptions speedOptions) {
 		intakeControl(
 			options.intakeForward,
 			options.intakeBackward,
@@ -168,16 +168,16 @@ void (*autonFunctions[])() = {
 	}
 
 //Auton selector
-	void autonSelector() {
+	void autonSelector(const struct autonSelectorOptions options) {
 		while (true) {
 			//Prints autons
 				printAutons();
 			//Moves selection up
-				autonSelectionUp(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP));
+				autonSelectionUp(master.get_digital_new_press(options.moveUp));
 			//Moves selection down
-				autonSelectionDown(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN));
+				autonSelectionDown(master.get_digital_new_press(options.moveDown));
 			//Breaks function when auton is selected
-				if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+				if (master.get_digital(options.selectAuton)) {
 					pros::lcd::clear_line(6);
 					pros::lcd::clear_line(7);
 					break;

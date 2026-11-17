@@ -113,15 +113,15 @@ void opcontrol() {
         .clawDown = master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)
       },{
         //Speed options for the motors
-        //remove for default speed of 127 for said motor
+        //remove for default speed of 100% for said motor
         .intakeSpeed = motorVelocity(85),
         .liftSpeed = motorVelocity(90),
         .clawSpeed = motorVelocity(80)
       });
       pneumaticControls();
       // get joystick positions
-      int leftY = drivetrainSpeedModifier(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-      int rightX = drivetrainSpeedModifier(master.get_digital(pros::E_CONTROLLER_DIGITAL_Y)) * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+      int leftY = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+      int rightX = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
       // move the chassis with curvature drive
       chassis.arcade(leftY, rightX);
       // delay to save resources
