@@ -1,5 +1,6 @@
 #include "main.h"
 #include "helpers.hpp"
+#include "pros/misc.h"
 
 /**
  * Runs initialization code. This occurs as soon as the program is started.
@@ -10,7 +11,7 @@
 void initialize() {
     chassis.calibrate(); // calibrate the chassis. This will calibrate the IMU and reset the odometry to 0,0,0
     pros::lcd::initialize(); // initialize brain screen
-        // the default rate is 50. however, if you need to change the rate, you
+    // the default rate is 50. however, if you need to change the rate, you
     // can do the following.
     // lemlib::bufferedStdout().setRate(...);
     // If you use bluetooth or a wired connection, you will want to have a rate of 10ms
@@ -18,10 +19,12 @@ void initialize() {
     // for more information on how the formatting for the loggers
     // works, refer to the fmtlib docs
 
+    //Auton selection
+      autonSelector();
+
     // thread to for brain screen and position logging
     pros::Task screenTask([&]() {
         while (true) {
-          if (showStats) {
             // print robot location to the brain screen
             pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
             pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
@@ -33,7 +36,6 @@ void initialize() {
             lemlib::telemetrySink()->info("Chassis pose: {}", chassis.getPose());
             // delay to save resources
             pros::delay(50);
-          }
         }
     });
 
@@ -73,9 +75,9 @@ void disabled() {
  * runs after initialize if the robot is connected to field control
  */
 void competition_initialize() {
-  showStats = false;
-  autonSelector();
-  showStats = true;
+  // showStats = false;
+  // autonSelector();
+  // showStats = true;
 }
 
 // get a path used for pure pursuit
@@ -88,7 +90,7 @@ ASSET(example_txt); // '.' replaced with "_" to make c++ happy
  * This is an example autonomous routine which demonstrates a lot of the features LemLib has to offer
  */
 void autonomous() {
-  autonFunctions[autonSelection]();
+    autonFunctions[autonSelection]();
 }
 
 /**

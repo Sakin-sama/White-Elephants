@@ -1,4 +1,5 @@
 #include "helpers.hpp"
+#include "liblvgl/llemu.hpp"
 #include "pros/misc.h"
 
 //Variables
@@ -8,18 +9,34 @@ float currentDriveSpeedMultiplier = 1.0;
 int autonSelection = 0;
 int autonSelectionScrollAmount = 0;
 //Arrays
-std::array<std::string, 4> autons = {
+std::array<std::string, 10> autons = {
+	//Stays none
     "None",
+	//Set to name of corresponding function
     "Teamwork",
     "Skills full",
-    "Skills park"
+    "Skills park",
+	"N/A 1",
+	"N/A 2",
+	"N/A 3",
+	"N/A 4",
+	"N/A 5",
+	"N/A 6",
 };
 
 void (*autonFunctions[])() = {
+	//Stays nullptr
 	nullptr,
+	//Set to name of corresponding function
 	teamworkAuton,
 	skillsAuton,
-	skillsParkAuton
+	skillsParkAuton,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr
 };
 
 //Motor velocity conversion
@@ -109,47 +126,62 @@ void (*autonFunctions[])() = {
 			}
 	}
 
+//Print available autons
+	void printAutons() {
+		for (int i = 0; i < std::min(autons.size(), size_t(5)); i++) {
+			pros::lcd::print(0, "Auton programs!");
+			pros::lcd::print(1,":D");
+			if (autonSelection == i) {
+				pros::lcd::print(i + 2,">%s",autons[i + autonSelectionScrollAmount].c_str());
+			} else {
+				pros::lcd::print(i + 2," %s",autons[i + autonSelectionScrollAmount].c_str());
+			}
+		}	
+	}
+
+//Move auton selection up
+	void autonSelectionUp(bool button) {
+		if (button) {
+			if (autonSelection > 0) {
+				autonSelection--;
+			} else if (autonSelectionScrollAmount > 0) {
+				autonSelectionScrollAmount--;
+			} else {
+				autonSelection = std::min(autons.size(), size_t(5)) - 1;
+				autonSelectionScrollAmount = std::max(int(autons.size()) - 5, 0);
+			}
+		}
+	}
+
+//Move auton selection down
+	void autonSelectionDown(bool button) {
+		if (button) {
+			if (autonSelection < std::min(autons.size(), size_t(5)) - 1) {
+				autonSelection++;
+			} else if (5 + autonSelectionScrollAmount < autons.size()) {
+				autonSelectionScrollAmount++;
+			} else {
+				autonSelection = 0;
+				autonSelectionScrollAmount = 0;
+			}
+		}
+	}
+
 //Auton selector
 	void autonSelector() {
-		while (!master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
-			if (autons.size() > 0) {
-				//Prints autons
-				pros::lcd::clear();
-				for (int i = 0; i < std::min(autons.size(), size_t(5)); i++) {
-					if (autonSelection == i) {
-						pros::lcd::print(i,">%s",autons[i + autonSelectionScrollAmount].c_str());
-					} else {
-						pros::lcd::print(i," %s",autons[i + autonSelectionScrollAmount].c_str());
-					}
+		while (true) {
+			//Prints autons
+				printAutons();
+			//Moves selection up
+				autonSelectionUp(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP));
+			//Moves selection down
+				autonSelectionDown(master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN));
+			//Breaks function when auton is selected
+				if (master.get_digital(pros::E_CONTROLLER_DIGITAL_A)) {
+					pros::lcd::clear_line(6);
+					pros::lcd::clear_line(7);
+					break;
 				}
-				//Moves selection up
-				if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_UP)) {
-					if (autonSelection > 0) {
-						autonSelection--;
-					} else if (autonSelectionScrollAmount > 0) {
-						autonSelectionScrollAmount--;
-					} else {
-						autonSelection = std::min(autons.size(), size_t(5)) - 1;
-						autonSelectionScrollAmount = std::max(int(autons.size()) - 5, 0);
-					}
-				}
-				//Moves selection down
-				if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_DOWN)) {
-					if (autonSelection < std::min(autons.size(), size_t(5)) - 1) {
-						autonSelection++;
-					} else if (5 + autonSelectionScrollAmount < autons.size()) {
-						autonSelectionScrollAmount++;
-					} else {
-						autonSelection = 0;
-						autonSelectionScrollAmount = 0;
-					}
-				}
-			} else {
-				//No autons found
-				pros::lcd::clear();
-				pros::lcd::print(0,"No autons found");
-				pros::lcd::print(1,":|");
-			}
 			pros::delay(50);
 		}
 	}

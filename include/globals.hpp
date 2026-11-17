@@ -8,8 +8,7 @@
 
 //Variables
   extern float currentDriveSpeedMultiplier;
-  extern bool showStats;
-
+  
 //Controllers
   extern pros::Controller master;
 
