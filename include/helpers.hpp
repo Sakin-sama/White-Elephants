@@ -32,7 +32,7 @@
     };
 //Functions
     double motorVelocity(int givenVelocity);
-    float drivetrainSpeedModifier(pros::controller_digital_e_t chosenButton);
+    float drivetrainSpeedModifier(pros::controller_digital_e_t button);
     void motorControls(const struct motorControlOptions options = {}, const struct motorSpeedOptions speedOptions = {});
     void intakeControl(bool forward, bool backward, double speed);
     void liftControl(bool up, bool down, double speed);

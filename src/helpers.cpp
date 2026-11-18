@@ -45,8 +45,8 @@ void (*autonFunctions[])() = {
 	}
 
 //Slowed driving
-	float drivetrainSpeedModifier(pros::controller_digital_e_t chosenButton) {
-		if (master.get_digital(chosenButton)) {
+	float drivetrainSpeedModifier(pros::controller_digital_e_t button) {
+		if (master.get_digital(button)) {
 			currentDriveSpeedMultiplier = drivetrainSpeedConstant;
 			return drivetrainSpeedConstant;
 		} else {

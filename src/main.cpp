@@ -9,58 +9,58 @@
  * to keep execution time for this mode under a few seconds.
  */
 void initialize() {
-    chassis.calibrate(); // calibrate the chassis. This will calibrate the IMU and reset the odometry to 0,0,0
-    pros::lcd::initialize(); // initialize brain screen
-    // the default rate is 50. however, if you need to change the rate, you
-    // can do the following.
-    // lemlib::bufferedStdout().setRate(...);
-    // If you use bluetooth or a wired connection, you will want to have a rate of 10ms
+	chassis.calibrate(); // calibrate the chassis. This will calibrate the IMU and reset the odometry to 0,0,0
+	pros::lcd::initialize(); // initialize brain screen
+	// the default rate is 50. however, if you need to change the rate, you
+	// can do the following.
+	// lemlib::bufferedStdout().setRate(...);
+	// If you use bluetooth or a wired connection, you will want to have a rate of 10ms
 
-    // for more information on how the formatting for the loggers
-    // works, refer to the fmtlib docs
+	// for more information on how the formatting for the loggers
+	// works, refer to the fmtlib docs
 
-    //Auton selection
-      autonSelector();
+	//Auton selection
+	  autonSelector();
 
-    // thread to for brain screen and position logging
-    pros::Task screenTask([&]() {
-        while (true) {
-            // print robot location to the brain screen
-            pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
-            pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
-            pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
-            pros::lcd::print(3, "Lift: %f", lift.get_position()); // lift position
-            pros::lcd::print(4, "isIntaking: %f", isIntaking); // is the intake running
-            pros::lcd::print(5, "driveSpeed: %f", currentDriveSpeedMultiplier); // what speed is the drivetrain running at
-            // log position telemetry
-            lemlib::telemetrySink()->info("Chassis pose: {}", chassis.getPose());
-            // delay to save resources
-            pros::delay(50);
-        }
-    });
+	// thread to for brain screen and position logging
+	pros::Task screenTask([&]() {
+		while (true) {
+			// print robot location to the brain screen
+			pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
+			pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
+			pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
+			pros::lcd::print(3, "Lift: %f", lift.get_position()); // lift position
+			pros::lcd::print(4, "isIntaking: %f", isIntaking); // is the intake running
+			pros::lcd::print(5, "driveSpeed: %f", currentDriveSpeedMultiplier); // what speed is the drivetrain running at
+			// log position telemetry
+			lemlib::telemetrySink()->info("Chassis pose: {}", chassis.getPose());
+			// delay to save resources
+			pros::delay(50);
+		}
+	});
 
-   	claw.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
-   	lift.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
-    lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-    claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-    lift.tare_position();
-    lift.set_zero_position(0);
-    claw.tare_position();
-    claw.set_zero_position(0);
-    
-    //MVlib logger - straight from documentation example. See https://github.com/lewispinstein-hue/MotionView/blob/main/MVLib/README.md
-   //   auto& logger = mvlib::Logger::getInstance();
-   //   logger.setBuildDate(__DATE__);
-   //
-   //   // Attach your odom
-   //   mvlib::setOdom(&chassis);
-   //   // Needed for accurate speed telemetry
-   //   logger.setRobot({
-   //     .leftDrivetrain = &intakeLeft,
-   //     .rightDrivetrain = &intakeRight
-   //   });
-   //
-   //   logger.start();
+	claw.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
+	lift.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
+	lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	lift.tare_position();
+	lift.set_zero_position(0);
+	claw.tare_position();
+	claw.set_zero_position(0);
+	
+	//MVlib logger - straight from documentation example. See https://github.com/lewispinstein-hue/MotionView/blob/main/MVLib/README.md
+	//   auto& logger = mvlib::Logger::getInstance();
+	//   logger.setBuildDate(__DATE__);
+	//
+	//   // Attach your odom
+	//   mvlib::setOdom(&chassis);
+	//   // Needed for accurate speed telemetry
+	//   logger.setRobot({
+	//     .leftDrivetrain = &intakeLeft,
+	//     .rightDrivetrain = &intakeRight
+	//   });
+	//
+	//   logger.start();
 
 }
 
@@ -68,16 +68,14 @@ void initialize() {
  * Runs while the robot is disabled
  */
 void disabled() {
-  //autonSelector();
+
 }
 
 /**
  * runs after initialize if the robot is connected to field control
  */
 void competition_initialize() {
-  // showStats = false;
-  // autonSelector();
-  // showStats = true;
+
 }
 
 // get a path used for pure pursuit
@@ -90,7 +88,7 @@ ASSET(example_txt); // '.' replaced with "_" to make c++ happy
  * This is an example autonomous routine which demonstrates a lot of the features LemLib has to offer
  */
 void autonomous() {
-    autonFunctions[autonSelection]();
+	autonFunctions[autonSelection]();
 }
 
 /**
@@ -100,31 +98,40 @@ void opcontrol() {
   //Temporary code
 
   //Permanent code
-  chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
-    while (true) {
-      motorControls({
-        //Controls options for motors
-        //remove for no control of said motor
-        .intakeForward = master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B),
-        .intakeBackward = master.get_digital(pros::E_CONTROLLER_DIGITAL_A),
-        .liftUp = master.get_digital(pros::E_CONTROLLER_DIGITAL_L1),
-        .liftDown = master.get_digital(pros::E_CONTROLLER_DIGITAL_L2),
-        .clawUp = master.get_digital(pros::E_CONTROLLER_DIGITAL_R1),
-        .clawDown = master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)
-      },{
-        //Speed options for the motors
-        //remove for default speed of 100% for said motor
-        .intakeSpeed = motorVelocity(85),
-        .liftSpeed = motorVelocity(90),
-        .clawSpeed = motorVelocity(80)
-      });
-      pneumaticControls();
-      // get joystick positions
-      int leftY = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-      int rightX = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
-      // move the chassis with curvature drive
-      chassis.arcade(leftY, rightX);
-      // delay to save resources
-      pros::delay(10);
-  }
+	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
+	//All of the robot controls
+	pros::Task robotControl([&] {
+	  while (true) {
+		motorControls({
+			//Controls options for motors
+			//remove for no control of said motor
+			.intakeForward = master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B),
+			.intakeBackward = master.get_digital(pros::E_CONTROLLER_DIGITAL_A),
+			.liftUp = master.get_digital(pros::E_CONTROLLER_DIGITAL_L1),
+			.liftDown = master.get_digital(pros::E_CONTROLLER_DIGITAL_L2),
+			.clawUp = master.get_digital(pros::E_CONTROLLER_DIGITAL_R1),
+			.clawDown = master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)
+		},{
+			//Speed options for the motors
+			//remove for default speed of 100% for said motor
+			.intakeSpeed = motorVelocity(85),
+			.liftSpeed = motorVelocity(90),
+			.clawSpeed = motorVelocity(80)
+		});
+
+		pneumaticControls();
+		//Delay for resources
+		pros::delay(10);
+	  }
+	});
+	//All of the driving code and pros/lemlib stuff
+	while (true) {
+		// get joystick positions
+		int leftY = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+		int rightX = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+		// move the chassis with curvature drive
+		chassis.arcade(leftY, rightX);
+		// delay to save resources
+		pros::delay(10);
+	}
 }
