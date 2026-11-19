@@ -5,6 +5,7 @@
 #include <array>
 #include <string>
 #include <algorithm>
+#include <optional>
 
 //Variables
   extern float currentDriveSpeedMultiplier;

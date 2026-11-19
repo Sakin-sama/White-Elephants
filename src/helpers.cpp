@@ -41,78 +41,104 @@ void (*autonFunctions[])() = {
 
 //Motor velocity conversion
 	double motorVelocity(int givenVelocity) {
-	return (std::max(std::min(((givenVelocity * 127) / 100), 127), -127));
+	    return (std::max(std::min(((givenVelocity * 127) / 100), 127), -127));
 	}
 
 //Slowed driving
-	float drivetrainSpeedModifier(pros::controller_digital_e_t button) {
-		if (master.get_digital(button)) {
+	float drivetrainSpeedModifier(const std::optional<pros::controller_digital_e_t>& button) {
+		if (buttonStatus(button)) {
 			currentDriveSpeedMultiplier = drivetrainSpeedConstant;
 			return drivetrainSpeedConstant;
-		} else {
-			currentDriveSpeedMultiplier = 1;
-			return 1;
 		}
+
+		currentDriveSpeedMultiplier = 1;
+		return 1;
 	}
+
+//Checks if a button is pressed or even exists
+    bool buttonStatus(const std::optional<pros::controller_digital_e_t>& button, const enum buttonPressTypes& pressType) {
+        if (button) {
+            if (pressType == buttonPressTypes::NEW_PRESS) {
+                return master.get_digital_new_press(*button);
+            }
+
+            if (pressType == buttonPressTypes::NEW_RELEASE) {
+                return master.get_digital_new_release(*button);
+            }
+
+            return master.get_digital(*button);
+        }
+
+        return false;
+    }
 
 //Intake function
 	void intakeControl(bool forward, bool backward, double speed) {
 		if (forward) {
-			if (isIntaking) {
-				isIntaking = false;
-			} else {
-				isIntaking = true;
-			}
-		} else if (backward) {
-			intake.move(-speed);
-		} else {
-			if (isIntaking) {
-				intake.move(speed);
-			} else {
-				intake.brake();
-			}
+			isIntaking = !isIntaking;
+            return;
 		}
+
+        if (backward) {
+			intake.move(-speed);
+            return;
+		}
+
+        if (isIntaking) {
+            intake.move(speed);
+            return;
+        }
+
+        intake.brake();
 	}
 
 //Lift function
 	void liftControl(bool up, bool down, double speed) {
 		if (up) {
 			lift.move_absolute(1700.0, speed);
-		} else if (down) {
-			lift.move_absolute(0.0, -speed);
-		} else {
-			lift.brake();
+            return;
 		}
+
+        if (down) {
+			lift.move_absolute(0.0, -speed);
+            return;
+		}
+
+		lift.brake();
 	}
 
 //Claw function
 	void clawControl(bool up, bool down, double speed) {
 		if (up) {
 			claw.move_absolute(315.0, speed);
-		} else if (down) {
-			claw.move_absolute(0.0, -speed);
-		} else {
-			claw.brake();
+            return;
 		}
+
+        if (down) {
+			claw.move_absolute(0.0, -speed);
+            return;
+		}
+
+		claw.brake();
 	}
 
 //Motor controls
-	void motorControls(const struct motorControlOptions options, const struct motorSpeedOptions speedOptions) {
+	void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {
 		intakeControl(
-			options.intakeForward,
-			options.intakeBackward,
+			buttonStatus(options.intakeForward, buttonPressTypes::NEW_PRESS),
+		    buttonStatus(options.intakeBackward),
 			motorVelocity(speedOptions.intakeSpeed)
 		);
 		
 		liftControl(
-			options.liftUp,
-			options.liftDown,
+			buttonStatus(options.liftUp),
+			buttonStatus(options.liftDown),
 			motorVelocity(speedOptions.liftSpeed)
 		);
 
 		clawControl(
-			options.clawUp,
-			options.clawDown,
+			buttonStatus(options.clawUp),
+			buttonStatus(options.clawDown),
 			motorVelocity(speedOptions.clawSpeed)
 		);
 	}
@@ -128,9 +154,9 @@ void (*autonFunctions[])() = {
 
 //Print available autons
 	void printAutons() {
+		pros::lcd::print(0, "Auton programs!");
+		pros::lcd::print(1,":D");
 		for (int i = 0; i < std::min(autons.size(), size_t(5)); i++) {
-			pros::lcd::print(0, "Auton programs!");
-			pros::lcd::print(1,":D");
 			if (autonSelection == i) {
 				pros::lcd::print(i + 2,">%s",autons[i + autonSelectionScrollAmount].c_str());
 			} else {
@@ -144,12 +170,16 @@ void (*autonFunctions[])() = {
 		if (button) {
 			if (autonSelection > 0) {
 				autonSelection--;
-			} else if (autonSelectionScrollAmount > 0) {
-				autonSelectionScrollAmount--;
-			} else {
-				autonSelection = std::min(autons.size(), size_t(5)) - 1;
-				autonSelectionScrollAmount = std::max(int(autons.size()) - 5, 0);
+                return;
 			}
+
+            if (autonSelectionScrollAmount > 0) {
+				autonSelectionScrollAmount--;
+                return;
+			}
+
+            autonSelection = std::min(autons.size(), size_t(5)) - 1;
+            autonSelectionScrollAmount = std::max(int(autons.size()) - 5, 0);
 		}
 	}
 
@@ -158,26 +188,30 @@ void (*autonFunctions[])() = {
 		if (button) {
 			if (autonSelection < std::min(autons.size(), size_t(5)) - 1) {
 				autonSelection++;
-			} else if (5 + autonSelectionScrollAmount < autons.size()) {
-				autonSelectionScrollAmount++;
-			} else {
-				autonSelection = 0;
-				autonSelectionScrollAmount = 0;
+                return;
 			}
+
+            if (5 + autonSelectionScrollAmount < autons.size()) {
+				autonSelectionScrollAmount++;
+                return;
+			}
+            
+            autonSelection = 0;
+            autonSelectionScrollAmount = 0;
 		}
 	}
 
 //Auton selector
-	void autonSelector(const struct autonSelectorOptions options) {
+	void autonSelector(const struct autonSelectorOptions& options) {
 		while (true) {
 			//Prints autons
 				printAutons();
 			//Moves selection up
-				autonSelectionUp(master.get_digital_new_press(options.moveUp));
+				autonSelectionUp(buttonStatus(options.moveUp, buttonPressTypes::NEW_PRESS));
 			//Moves selection down
-				autonSelectionDown(master.get_digital_new_press(options.moveDown));
+				autonSelectionDown(buttonStatus(options.moveDown, buttonPressTypes::NEW_PRESS));
 			//Breaks function when auton is selected
-				if (master.get_digital(options.selectAuton)) {
+				if (buttonStatus(options.selectAuton)) {
 					pros::lcd::clear_line(6);
 					pros::lcd::clear_line(7);
 					break;

@@ -88,7 +88,9 @@ ASSET(example_txt); // '.' replaced with "_" to make c++ happy
  * This is an example autonomous routine which demonstrates a lot of the features LemLib has to offer
  */
 void autonomous() {
-	autonFunctions[autonSelection]();
+    if (autonFunctions[autonSelection] != nullptr) {
+	    autonFunctions[autonSelection]();
+    }
 }
 
 /**
@@ -105,12 +107,12 @@ void opcontrol() {
 		motorControls({
 			//Controls options for motors
 			//remove for no control of said motor
-			.intakeForward = master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_B),
-			.intakeBackward = master.get_digital(pros::E_CONTROLLER_DIGITAL_A),
-			.liftUp = master.get_digital(pros::E_CONTROLLER_DIGITAL_L1),
-			.liftDown = master.get_digital(pros::E_CONTROLLER_DIGITAL_L2),
-			.clawUp = master.get_digital(pros::E_CONTROLLER_DIGITAL_R1),
-			.clawDown = master.get_digital(pros::E_CONTROLLER_DIGITAL_R2)
+			.intakeForward = pros::E_CONTROLLER_DIGITAL_B,
+			.intakeBackward = pros::E_CONTROLLER_DIGITAL_A,
+			.liftUp = pros::E_CONTROLLER_DIGITAL_L1,
+			.liftDown = pros::E_CONTROLLER_DIGITAL_L2,
+			.clawUp = pros::E_CONTROLLER_DIGITAL_R1,
+			.clawDown = pros::E_CONTROLLER_DIGITAL_R2
 		},{
 			//Speed options for the motors
 			//remove for default speed of 100% for said motor
@@ -127,6 +129,7 @@ void opcontrol() {
 	//All of the driving code and pros/lemlib stuff
 	while (true) {
 		// get joystick positions
+        //Leave button spot blank in this function to null this
 		int leftY = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
 		int rightX = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 		// move the chassis with curvature drive

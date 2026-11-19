@@ -13,12 +13,12 @@
     extern void (*autonFunctions[])();
 //Structs
     struct motorControlOptions {
-        int intakeForward = 0;
-        int intakeBackward = 0;
-        int liftUp = 0;
-        int liftDown = 0;
-        int clawUp = 0;
-        int clawDown = 0;
+        std::optional<pros::controller_digital_e_t> intakeForward = std::nullopt;
+        std::optional<pros::controller_digital_e_t> intakeBackward = std::nullopt;
+        std::optional<pros::controller_digital_e_t> liftUp = std::nullopt;
+        std::optional<pros::controller_digital_e_t> liftDown = std::nullopt;
+        std::optional<pros::controller_digital_e_t> clawUp = std::nullopt;
+        std::optional<pros::controller_digital_e_t> clawDown = std::nullopt;
     };
     struct motorSpeedOptions {
         double intakeSpeed = 127;
@@ -26,16 +26,23 @@
         double clawSpeed = 127;
     };
     struct autonSelectorOptions {
-        pros::controller_digital_e_t moveUp = pros::E_CONTROLLER_DIGITAL_UP;
-        pros::controller_digital_e_t moveDown = pros::E_CONTROLLER_DIGITAL_DOWN;
-        pros::controller_digital_e_t selectAuton = pros::E_CONTROLLER_DIGITAL_A;
+        std::optional<pros::controller_digital_e_t> moveUp = std::nullopt;
+        std::optional<pros::controller_digital_e_t> moveDown = std::nullopt;
+        std::optional<pros::controller_digital_e_t> selectAuton = pros::E_CONTROLLER_DIGITAL_A;
+    };
+//Enums for classes
+    enum class buttonPressTypes {
+        HELD,
+        NEW_PRESS,
+        NEW_RELEASE
     };
 //Functions
     double motorVelocity(int givenVelocity);
-    float drivetrainSpeedModifier(pros::controller_digital_e_t button);
-    void motorControls(const struct motorControlOptions options = {}, const struct motorSpeedOptions speedOptions = {});
+    float drivetrainSpeedModifier(const std::optional<pros::controller_digital_e_t>& button = std::nullopt);
+    bool buttonStatus(const std::optional<pros::controller_digital_e_t>& button, const buttonPressTypes& pressType = buttonPressTypes::HELD);
+    void motorControls(const struct motorControlOptions& options = {}, const struct motorSpeedOptions& speedOptions = {});
     void intakeControl(bool forward, bool backward, double speed);
     void liftControl(bool up, bool down, double speed);
     void clawControl(bool up, bool down, double speed);
     void pneumaticControls();
-    void autonSelector(const struct autonSelectorOptions options = {});
+    void autonSelector(const struct autonSelectorOptions& options = {});
