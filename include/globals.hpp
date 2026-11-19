@@ -20,6 +20,7 @@
 //Motors
   extern pros::Motor intake;
   extern pros::Motor claw;
+  extern pros::Motor liftRotator;
   extern pros::MotorGroup lift;
   
 //Pneumatics

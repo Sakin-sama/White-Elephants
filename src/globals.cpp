@@ -1,4 +1,5 @@
 #include "globals.hpp"
+#include "helpers.hpp"
 
 // INTAKE IS THE FRONT
 
@@ -6,14 +7,15 @@
 	pros::Controller master(pros::E_CONTROLLER_MASTER);
 
 //Motors
-  //Intake/Outake motors
-    pros::Motor intake(2, pros::v5::MotorGears::blue);
+  //Miscellaneous motors
+    pros::Motor intake(15, pros::v5::MotorGears::blue);
     pros::Motor claw(6, pros::v5::MotorGears::green);
+    pros::Motor liftRotator(17,pros::v5::MotorGears::green);
     pros::MotorGroup lift({10,-1}, pros::v5::MotorGears::green);
 
   //Drivetrain
-    pros::MotorGroup intakeRight({12,11}, pros::v5::MotorGears::green);
-    pros::MotorGroup intakeLeft({-19,-20}, pros::v5::MotorGears::green);
+    pros::MotorGroup intakeRight({1,-11}, pros::v5::MotorGears::green);
+    pros::MotorGroup intakeLeft({-10,20}, pros::v5::MotorGears::green);
 
 //Pneumatics
   //Claw - Left/Right is relative to INTAKE

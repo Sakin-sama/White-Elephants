@@ -42,8 +42,8 @@
         Do NOT touch the assigned type   |           | change amount and  | do not change
                                          v           v names as needed    v given value
         */
-        std::optional<pros::controller_digital_e_t> moveUp = std::nullopt;
-        std::optional<pros::controller_digital_e_t> moveDown = std::nullopt;
+        std::optional<pros::controller_digital_e_t> moveSelectionUp = std::nullopt;
+        std::optional<pros::controller_digital_e_t> moveSelectionDown = std::nullopt;
         std::optional<pros::controller_digital_e_t> selectAuton = pros::E_CONTROLLER_DIGITAL_A;
     };
 //Enums for classes
@@ -53,16 +53,16 @@
         NEW_RELEASE
     };
 //Functions (can make own, ask for help as needed)
-    //Misc. helpers
+    //Miscellaneous helpers
         double motorVelocity(int givenVelocity);
         float drivetrainSpeedModifier(const std::optional<pros::controller_digital_e_t>& button = std::nullopt);
         bool buttonStatus(const std::optional<pros::controller_digital_e_t>& button, const buttonPressTypes& pressType = buttonPressTypes::HELD);
         void autonSelector(const struct autonSelectorOptions& options = {});
-    //Related to motors
+    //Related to motors (use motorControls, do not remove it)
         void motorControls(const struct motorControlOptions& options = {}, const struct motorSpeedOptions& speedOptions = {});
         void intakeControl(bool forward, bool backward, double speed);
         void liftControl(bool up, bool down, double speed);
         void clawRotatorControl(bool up, bool down, double speed);
-    //Related to pneumatics
+    //Related to pneumatics (use pneumaticControls, do not remove it)
         void pneumaticControls(const struct pneumaticControlOptions& options = {});
         void clawStateControl(bool toggle);

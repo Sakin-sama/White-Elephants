@@ -36,7 +36,7 @@
         nullptr,
         nullptr,
         nullptr,
-        nullptr
+		nullptr
     };
 
 /*
@@ -110,12 +110,20 @@ Function for your lift
 */
 	void liftControl(bool up, bool down, double speed) {
 		if (up) {
+            if (lift.get_position() < 1690) {
 			lift.move_absolute(1700.0, speed);
+            return;
+            }
+            liftRotator.move_absolute(360.0,speed);
             return;
 		}
 
         if (down) {
-			lift.move_absolute(0.0, -speed);
+            if (liftRotator.get_position() > 10) {
+			liftRotator.move_absolute(0.0, -speed);
+            return;
+            }
+            lift.move_absolute(0.0,-speed);
             return;
 		}
 
@@ -249,9 +257,9 @@ make sure names match with function placement in arrays
 			//Prints autons
 				printAutons();
 			//Moves selection up
-				autonSelectionUp(buttonStatus(options.moveUp, buttonPressTypes::NEW_PRESS));
+				autonSelectionUp(buttonStatus(options.moveSelectionUp, buttonPressTypes::NEW_PRESS));
 			//Moves selection down
-				autonSelectionDown(buttonStatus(options.moveDown, buttonPressTypes::NEW_PRESS));
+				autonSelectionDown(buttonStatus(options.moveSelectionDown, buttonPressTypes::NEW_PRESS));
 			//Breaks function when auton is selected
 				if (buttonStatus(options.selectAuton)) {
 					pros::lcd::clear_line(6);
