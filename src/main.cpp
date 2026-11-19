@@ -20,7 +20,10 @@ void initialize() {
 	// works, refer to the fmtlib docs
 
 	//Auton selection
-	  autonSelector();
+        autonSelector({
+            .moveSelectionUp = pros::E_CONTROLLER_DIGITAL_UP,
+            .moveSelectionDown = pros::E_CONTROLLER_DIGITAL_DOWN
+        });
 
 	// thread to for brain screen and position logging
 	pros::Task screenTask([&]() {
@@ -88,9 +91,9 @@ ASSET(example_txt); // '.' replaced with "_" to make c++ happy
  * This is an example autonomous routine which demonstrates a lot of the features LemLib has to offer
  */
 void autonomous() {
-    if (autonFunctions[autonSelection] != nullptr) {
-	    autonFunctions[autonSelection]();
-    }
+    // if (autonFunctions[autonSelection] != nullptr) {
+	//     autonFunctions[autonSelection]();
+    // }
 }
 
 /**
@@ -98,7 +101,7 @@ void autonomous() {
  */
 void opcontrol() {
   //Temporary code
-
+  
   //Permanent code
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
 	//All of the robot controls

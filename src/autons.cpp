@@ -2,16 +2,10 @@
 #include "helpers.hpp"
 
 //Teamwork auton
-    void teamworkAuton() {
-
-    }
+    void teamworkAuton() {}
 
 //Skills auton
-    void skillsAuton() {
-
-    }
+    void skillsAuton() {}
 
 //Skills park auton
-    void skillsParkAuton() {
-        
-    }
+    void skillsParkAuton() {}
