@@ -13,6 +13,10 @@
     extern void (*autonFunctions[])();
 //Structs
     struct motorControlOptions {
+        /*
+        Do NOT touch the assigned type   |           | change amount and  | do not change
+                                         v           v names as needed    v given value
+        */
         std::optional<pros::controller_digital_e_t> intakeForward = std::nullopt;
         std::optional<pros::controller_digital_e_t> intakeBackward = std::nullopt;
         std::optional<pros::controller_digital_e_t> liftUp = std::nullopt;
@@ -25,7 +29,19 @@
         double liftSpeed = 127;
         double clawSpeed = 127;
     };
+    
+    struct pneumaticControlOptions {
+        /*
+        Do NOT touch the assigned type   |           | change amount and  | do not change
+                                         v           v names as needed    v given value
+        */
+        std::optional<pros::controller_digital_e_t> clawToggle = std::nullopt;
+    };
     struct autonSelectorOptions {
+        /*
+        Do NOT touch the assigned type   |           | change amount and  | do not change
+                                         v           v names as needed    v given value
+        */
         std::optional<pros::controller_digital_e_t> moveUp = std::nullopt;
         std::optional<pros::controller_digital_e_t> moveDown = std::nullopt;
         std::optional<pros::controller_digital_e_t> selectAuton = pros::E_CONTROLLER_DIGITAL_A;
@@ -36,13 +52,17 @@
         NEW_PRESS,
         NEW_RELEASE
     };
-//Functions
-    double motorVelocity(int givenVelocity);
-    float drivetrainSpeedModifier(const std::optional<pros::controller_digital_e_t>& button = std::nullopt);
-    bool buttonStatus(const std::optional<pros::controller_digital_e_t>& button, const buttonPressTypes& pressType = buttonPressTypes::HELD);
-    void motorControls(const struct motorControlOptions& options = {}, const struct motorSpeedOptions& speedOptions = {});
-    void intakeControl(bool forward, bool backward, double speed);
-    void liftControl(bool up, bool down, double speed);
-    void clawControl(bool up, bool down, double speed);
-    void pneumaticControls();
-    void autonSelector(const struct autonSelectorOptions& options = {});
+//Functions (can make own, ask for help as needed)
+    //Misc. helpers
+        double motorVelocity(int givenVelocity);
+        float drivetrainSpeedModifier(const std::optional<pros::controller_digital_e_t>& button = std::nullopt);
+        bool buttonStatus(const std::optional<pros::controller_digital_e_t>& button, const buttonPressTypes& pressType = buttonPressTypes::HELD);
+        void autonSelector(const struct autonSelectorOptions& options = {});
+    //Related to motors
+        void motorControls(const struct motorControlOptions& options = {}, const struct motorSpeedOptions& speedOptions = {});
+        void intakeControl(bool forward, bool backward, double speed);
+        void liftControl(bool up, bool down, double speed);
+        void clawRotatorControl(bool up, bool down, double speed);
+    //Related to pneumatics
+        void pneumaticControls(const struct pneumaticControlOptions& options = {});
+        void clawStateControl(bool toggle);

@@ -3,48 +3,56 @@
 #include "pros/misc.h"
 
 //Variables
-bool isIntaking = false;
-float drivetrainSpeedConstant = 0.85;
-float currentDriveSpeedMultiplier = 1.0;
-int autonSelection = 0;
-int autonSelectionScrollAmount = 0;
+    bool isIntaking = false;
+    float drivetrainSpeedConstant = 0.85;
+    float currentDriveSpeedMultiplier = 1.0;
+    int autonSelection = 0;
+    int autonSelectionScrollAmount = 0;
 //Arrays
-std::array<std::string, 10> autons = {
-	//Stays none
-    "None",
-	//Set to name of corresponding function
-    "Teamwork",
-    "Skills full",
-    "Skills park",
-	"N/A 1",
-	"N/A 2",
-	"N/A 3",
-	"N/A 4",
-	"N/A 5",
-	"N/A 6",
-};
+    std::array<std::string, 10> autons = {
+        //Stays none
+        "None",
+        //Set to name of corresponding function
+        "Teamwork",
+        "Skills full",
+        "Skills park",
+        "N/A 1",
+        "N/A 2",
+        "N/A 3",
+        "N/A 4",
+        "N/A 5",
+        "N/A 6",
+    };
 
-void (*autonFunctions[])() = {
-	//Stays nullptr
-	nullptr,
-	//Set to name of corresponding function
-	teamworkAuton,
-	skillsAuton,
-	skillsParkAuton,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr,
-	nullptr
-};
+    void (*autonFunctions[])() = {
+        //Stays nullptr
+        nullptr,
+        //Set to name of corresponding function
+        teamworkAuton,
+        skillsAuton,
+        skillsParkAuton,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr,
+        nullptr
+    };
 
-//Motor velocity conversion
+/*
+Motor velocity conversion
+mostly for my own simplification
+*/
 	double motorVelocity(int givenVelocity) {
 	    return (std::max(std::min(((givenVelocity * 127) / 100), 127), -127));
 	}
 
-//Slowed driving
+/*
+Slowed driving while holding a button
+ideal for better control when desired
+*can be turned off in main.cpp
+(where joystick positions are taken)*
+*/
 	float drivetrainSpeedModifier(const std::optional<pros::controller_digital_e_t>& button) {
 		if (buttonStatus(button)) {
 			currentDriveSpeedMultiplier = drivetrainSpeedConstant;
@@ -55,7 +63,10 @@ void (*autonFunctions[])() = {
 		return 1;
 	}
 
-//Checks if a button is pressed or even exists
+/*
+Checks if a button is pressed or even exists
+then asks which type of button press we want
+*/
     bool buttonStatus(const std::optional<pros::controller_digital_e_t>& button, const enum buttonPressTypes& pressType) {
         if (button) {
             if (pressType == buttonPressTypes::NEW_PRESS) {
@@ -72,7 +83,9 @@ void (*autonFunctions[])() = {
         return false;
     }
 
-//Intake function
+/*
+Function for intaking
+*/
 	void intakeControl(bool forward, bool backward, double speed) {
 		if (forward) {
 			isIntaking = !isIntaking;
@@ -92,7 +105,9 @@ void (*autonFunctions[])() = {
         intake.brake();
 	}
 
-//Lift function
+/*
+Function for your lift
+*/
 	void liftControl(bool up, bool down, double speed) {
 		if (up) {
 			lift.move_absolute(1700.0, speed);
@@ -107,8 +122,10 @@ void (*autonFunctions[])() = {
 		lift.brake();
 	}
 
-//Claw function
-	void clawControl(bool up, bool down, double speed) {
+/*
+Function for your claw
+*/
+	void clawRotatorControl(bool up, bool down, double speed) {
 		if (up) {
 			claw.move_absolute(315.0, speed);
             return;
@@ -122,7 +139,11 @@ void (*autonFunctions[])() = {
 		claw.brake();
 	}
 
-//Motor controls
+/*
+Motor controls
+gives on main area where all motor functions go
+assign controls in main.cpp
+*/
 	void motorControls(const struct motorControlOptions& options, const struct motorSpeedOptions& speedOptions) {
 		intakeControl(
 			buttonStatus(options.intakeForward, buttonPressTypes::NEW_PRESS),
@@ -136,23 +157,36 @@ void (*autonFunctions[])() = {
 			motorVelocity(speedOptions.liftSpeed)
 		);
 
-		clawControl(
+		clawRotatorControl(
 			buttonStatus(options.clawUp),
 			buttonStatus(options.clawDown),
 			motorVelocity(speedOptions.clawSpeed)
 		);
 	}
 
-//Pneumatic controls
-	void pneumaticControls() {
-		//Claw
-			if (master.get_digital_new_press(pros::E_CONTROLLER_DIGITAL_X)) {
-				clawLeft.toggle();
-				clawRight.toggle();
-			}
+/*
+Claw toggle function
+*/
+    void clawStateControl(bool toggle) {
+        if (toggle) {
+            clawLeft.toggle();
+            clawRight.toggle();
+        }
+    }
+/*
+Pneumatic controls
+gives on main area where all pneumatic functions go
+assign controls in main.cpp
+*/
+	void pneumaticControls(const struct pneumaticControlOptions& options) {
+        clawStateControl(
+            buttonStatus(options.clawToggle, buttonPressTypes::NEW_PRESS)
+        );
 	}
 
-//Print available autons
+/*
+Print available autons
+*/
 	void printAutons() {
 		pros::lcd::print(0, "Auton programs!");
 		pros::lcd::print(1,":D");
@@ -165,7 +199,9 @@ void (*autonFunctions[])() = {
 		}	
 	}
 
-//Move auton selection up
+/*
+Move auton selection up
+*/
 	void autonSelectionUp(bool button) {
 		if (button) {
 			if (autonSelection > 0) {
@@ -183,7 +219,9 @@ void (*autonFunctions[])() = {
 		}
 	}
 
-//Move auton selection down
+/*
+Move auton selection down
+*/
 	void autonSelectionDown(bool button) {
 		if (button) {
 			if (autonSelection < std::min(autons.size(), size_t(5)) - 1) {
@@ -195,13 +233,17 @@ void (*autonFunctions[])() = {
 				autonSelectionScrollAmount++;
                 return;
 			}
-            
+
             autonSelection = 0;
             autonSelectionScrollAmount = 0;
 		}
 	}
 
-//Auton selector
+/*
+Auton selector
+put auton names and functions in arrays at top of file
+make sure names match with function placement in arrays
+*/
 	void autonSelector(const struct autonSelectorOptions& options) {
 		while (true) {
 			//Prints autons

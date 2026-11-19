@@ -106,7 +106,7 @@ void opcontrol() {
 	  while (true) {
 		motorControls({
 			//Controls options for motors
-			//remove for no control of said motor
+			//remove entire line for no control of said motor
 			.intakeForward = pros::E_CONTROLLER_DIGITAL_B,
 			.intakeBackward = pros::E_CONTROLLER_DIGITAL_A,
 			.liftUp = pros::E_CONTROLLER_DIGITAL_L1,
@@ -115,7 +115,7 @@ void opcontrol() {
 			.clawDown = pros::E_CONTROLLER_DIGITAL_R2
 		},{
 			//Speed options for the motors
-			//remove for default speed of 100% for said motor
+			//remove entire line for default speed of 100% for said motor
 			.intakeSpeed = motorVelocity(85),
 			.liftSpeed = motorVelocity(90),
 			.clawSpeed = motorVelocity(80)
@@ -128,8 +128,11 @@ void opcontrol() {
 	});
 	//All of the driving code and pros/lemlib stuff
 	while (true) {
-		// get joystick positions
-        //Leave button spot blank in this function to null this
+		// gets joystick positions
+        /*
+        Leave button spot blank in this function |
+        to null driver slow button               v
+        */
 		int leftY = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
 		int rightX = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 		// move the chassis with curvature drive
