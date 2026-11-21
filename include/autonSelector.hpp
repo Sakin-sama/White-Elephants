@@ -1,5 +1,5 @@
 #include "helpers.hpp"
-
+#include "autons.hpp"
 //Arrays
     extern std::array<std::string, 10> autons;
     extern void (*autonFunctions[])();

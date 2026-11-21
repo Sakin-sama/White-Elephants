@@ -1,7 +1,6 @@
 #pragma once
 #include "globals.hpp"
 #include "pros/misc.h"
-#include "autons.hpp"
 
 //Variables
     extern bool isIntaking;
