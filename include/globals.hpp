@@ -6,31 +6,21 @@
 #include <string>
 #include <algorithm>
 #include <optional>
-
-//Variables
-  extern float currentDriveSpeedMultiplier;
   
 //Controllers
   extern pros::Controller master;
 
 //Drivetrain Motors
-  extern pros::MotorGroup intakeLeft;
-  extern pros::MotorGroup intakeRight;
+
 
 //Motors
-  extern pros::Motor intake;
-  extern pros::Motor claw;
-  extern pros::Motor liftRotator;
-  extern pros::MotorGroup lift;
+
   
 //Pneumatics
-  extern pros::adi::Pneumatics clawLeft;
-  extern pros::adi::Pneumatics clawRight;
+
 
 //Sensors
   extern pros::Imu imu;
-  extern pros::Distance left;
-  extern pros::Distance right;
 
 //Tracking Wheel
   extern pros::Rotation verticalEncoder;

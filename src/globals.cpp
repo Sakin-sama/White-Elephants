@@ -1,5 +1,7 @@
 #include "globals.hpp"
 #include "helpers.hpp"
+#include "pros/abstract_motor.hpp"
+#include "pros/motor_group.hpp"
 
 // INTAKE IS THE FRONT
 
@@ -8,34 +10,24 @@
 
 //Motors
   //Miscellaneous motors
-    pros::Motor intake(15, pros::v5::MotorGears::blue);
-    pros::Motor claw(6, pros::v5::MotorGears::green);
-    pros::Motor liftRotator(17,pros::v5::MotorGears::green);
-    pros::MotorGroup lift({10,-1}, pros::v5::MotorGears::green);
+
 
   //Drivetrain
-    pros::MotorGroup intakeRight({1,-11}, pros::v5::MotorGears::green);
-    pros::MotorGroup intakeLeft({-10,20}, pros::v5::MotorGears::green);
+    pros::MotorGroup drivetrainLeft({1,1}, pros::v5::MotorGearset::green);
+    pros::MotorGroup drivetrainRight({1,1}, pros::v5::MotorGearset::green);
 
 //Pneumatics
-  //Claw - Left/Right is relative to INTAKE
-    pros::adi::Pneumatics clawLeft('H', false);
-    pros::adi::Pneumatics clawRight('A', false);
 
 
 //Sensors
-	pros::Imu imu(13);
-  	pros::Distance left(11);
-   	pros::Distance right(11);
-   	pros::Distance clawSide(8);
-   	pros::Distance intakeSide(7);
+	pros::Imu imu(1);
 
 //Tracking Wheels
-	pros::Rotation verticalEncoder(18);
-	lemlib::TrackingWheel verticalTrackingWheel(&verticalEncoder, lemlib::Omniwheel::NEW_2, -0.75);
+	pros::Rotation verticalEncoder(1);
+	lemlib::TrackingWheel verticalTrackingWheel(&verticalEncoder, lemlib::Omniwheel::NEW_2, 0);
 
-	pros::Rotation horizontalEncoder(14);
-	lemlib::TrackingWheel horizontalTrackingWheel(&horizontalEncoder, lemlib::Omniwheel::NEW_2, -0.75);
+	pros::Rotation horizontalEncoder(1);
+	lemlib::TrackingWheel horizontalTrackingWheel(&horizontalEncoder, lemlib::Omniwheel::NEW_2, 0);
 
 //Odometry Settings
   	lemlib::OdomSensors Sensors(
@@ -43,13 +35,13 @@
 	    nullptr, // vertical tracking wheel 2, set to nullptr as we are using IMEs
 	    &horizontalTrackingWheel, // horizontal tracking wheel 1
 	    nullptr, // horizontal tracking wheel 2, set to nullptr as we don't have a second one
-	    nullptr // inertial sensor
+	    &imu // inertial sensor
     );
 
 //Drivetrain
 	lemlib::Drivetrain Drivetrain(
-	    &intakeLeft,
-	    &intakeRight,
+	    &drivetrainLeft,
+	    &drivetrainRight,
 	    12.875, //measure
 	    lemlib::Omniwheel::NEW_325, //idk if it's new or old 325
 	    333, //gear ratio  * gear cartridge (200)
