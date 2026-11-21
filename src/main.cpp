@@ -1,5 +1,7 @@
 #include "main.h"
 #include "helpers.hpp"
+#include "autons.hpp"
+#include "autonSelector.hpp"
 #include "pros/misc.h"
 
 /**
@@ -29,9 +31,7 @@ void initialize() {
 			pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
 			pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
 			pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
-			pros::lcd::print(3, "Lift: %f", lift.get_position()); // lift position
-			pros::lcd::print(4, "isIntaking: %f", isIntaking); // is the intake running
-			pros::lcd::print(5, "driveSpeed: %f", currentDriveSpeedMultiplier); // what speed is the drivetrain running at
+			pros::lcd::print(3, "driveSpeed: %f", currentDriveSpeedMultiplier); // what speed is the drivetrain running at
 			// log position telemetry
 			lemlib::telemetrySink()->info("Chassis pose: {}", chassis.getPose());
 			// delay to save resources
@@ -39,14 +39,8 @@ void initialize() {
 		}
 	});
 
-	claw.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
-	lift.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
-	lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	lift.tare_position();
-	lift.set_zero_position(0);
-	claw.tare_position();
-	claw.set_zero_position(0);
+    //Set encoder unit, brake mode, tare position, and zero position here
+
 	
 	//MVlib logger - straight from documentation example. See https://github.com/lewispinstein-hue/MotionView/blob/main/MVLib/README.md
 	//   auto& logger = mvlib::Logger::getInstance();
@@ -107,18 +101,11 @@ void opcontrol() {
 		motorControls({
 			//Controls options for motors
 			//remove entire line for no control of said motor
-			.intakeForward = pros::E_CONTROLLER_DIGITAL_B,
-			.intakeBackward = pros::E_CONTROLLER_DIGITAL_A,
-			.liftUp = pros::E_CONTROLLER_DIGITAL_L1,
-			.liftDown = pros::E_CONTROLLER_DIGITAL_L2,
-			.clawUp = pros::E_CONTROLLER_DIGITAL_R1,
-			.clawDown = pros::E_CONTROLLER_DIGITAL_R2
+
 		},{
 			//Speed options for the motors
 			//remove entire line for default speed of 100% for said motor
-			.intakeSpeed = motorVelocity(85),
-			.liftSpeed = motorVelocity(90),
-			.clawSpeed = motorVelocity(80)
+
 		});
 
 		pneumaticControls();
@@ -133,8 +120,8 @@ void opcontrol() {
         Leave button spot blank in this function |
         to null driver slow button               v
         */
-		int leftY = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
-		int rightX = drivetrainSpeedModifier(pros::E_CONTROLLER_DIGITAL_Y) * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
+		int leftY = drivetrainSpeedModifier() * master.get_analog(pros::E_CONTROLLER_ANALOG_LEFT_Y);
+		int rightX = drivetrainSpeedModifier() * master.get_analog(pros::E_CONTROLLER_ANALOG_RIGHT_X);
 		// move the chassis with curvature drive
 		chassis.arcade(leftY, rightX);
 		// delay to save resources
