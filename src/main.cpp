@@ -1,5 +1,6 @@
 #include "main.h"
 #include "helpers.hpp"
+#include "autonSelector.hpp"
 #include "pros/misc.h"
 
 /**

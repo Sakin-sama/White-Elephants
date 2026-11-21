@@ -1,7 +1,6 @@
 #pragma once
 #include "globals.hpp"
 #include "pros/misc.h"
-#include "autons.hpp"
 
 //Variables
     extern bool isIntaking;
@@ -37,15 +36,6 @@
         */
         std::optional<pros::controller_digital_e_t> clawToggle = std::nullopt;
     };
-    struct autonSelectorOptions {
-        /*
-        Do NOT touch the assigned type   |           | change amount and  | do not change
-                                         v           v names as needed    v given value
-        */
-        std::optional<pros::controller_digital_e_t> moveSelectionUp = std::nullopt;
-        std::optional<pros::controller_digital_e_t> moveSelectionDown = std::nullopt;
-        std::optional<pros::controller_digital_e_t> selectAuton = pros::E_CONTROLLER_DIGITAL_A;
-    };
 //Enums for classes
     enum class buttonPressTypes {
         HELD,
@@ -56,8 +46,7 @@
     //Miscellaneous helpers
         double motorVelocity(int givenVelocity);
         float drivetrainSpeedModifier(const std::optional<pros::controller_digital_e_t>& button = std::nullopt);
-        bool buttonStatus(const std::optional<pros::controller_digital_e_t>& button, const buttonPressTypes& pressType = buttonPressTypes::HELD);
-        void autonSelector(const struct autonSelectorOptions& options = {});
+        bool buttonStatus(const std::optional<pros::controller_digital_e_t>& button, const enum buttonPressTypes& pressType = buttonPressTypes::HELD);
     //Related to motors (use motorControls, do not remove it)
         void motorControls(const struct motorControlOptions& options = {}, const struct motorSpeedOptions& speedOptions = {});
         void intakeControl(bool forward, bool backward, double speed);
