@@ -1,5 +1,9 @@
 #include "helpers.hpp"
 #include "autons.hpp"
+
+//Variables
+    extern int autonSelection;
+    extern int autonSelectionScrollAmount;
 //Arrays
     extern std::array<std::string, 10> autons;
     extern void (*autonFunctions[])();
