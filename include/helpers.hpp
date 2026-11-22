@@ -5,6 +5,7 @@
 //Variables
     extern bool isIntaking;
     extern float drivetrainSpeedConstant;
+    extern float currentDriveSpeedMultiplier;
     extern int autonSelection;
     extern int autonSelectionScrollAmount;
 //Structs
