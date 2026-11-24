@@ -51,9 +51,7 @@ then asks which type of button press we want
         return false;
     }
 
-/*
-Function for intaking
-*/
+//Function for intaking
 	void intakeControl(bool forward, bool backward, double speed) {
 		if (forward) {
 			isIntaking = !isIntaking;
@@ -73,48 +71,21 @@ Function for intaking
         intake.brake();
 	}
 
-/*
-Function for your lift
-*/
+//Function for your lift
 	void liftControl(bool up, bool down, double speed) {
-		if (up) {
-            if (lift.get_position() < 1690) {
-			lift.move_absolute(1700.0, speed);
-            return;
-            }
-            liftRotator.move_absolute(360.0,speed);
-            return;
-		}
 
-        if (down) {
-            if (liftRotator.get_position() > 10) {
-			liftRotator.move_absolute(0.0, -speed);
-            return;
-            }
-            lift.move_absolute(0.0,-speed);
-            return;
-		}
-
-		lift.brake();
 	}
 
-/*
-Function for your claw
-*/
-	void clawRotatorControl(bool up, bool down, double speed) {
-		if (up) {
-			claw.move_absolute(315.0, speed);
-            return;
-		}
 
-        if (down) {
-			claw.move_absolute(0.0, -speed);
-            return;
-		}
+//Function for your claw rotator
+	void liftRotatorControl(bool up, bool down, double speed) {
 
-		claw.brake();
 	}
 
+//Function for your claw plate
+    void liftPlateControl(bool vertical, bool horizontal, double speed) {
+
+    }
 /*
 Motor controls
 gives on main area where all motor functions go
@@ -133,11 +104,17 @@ assign controls in main.cpp
 			motorVelocity(speedOptions.liftSpeed)
 		);
 
-		clawRotatorControl(
-			buttonStatus(options.clawUp),
-			buttonStatus(options.clawDown),
-			motorVelocity(speedOptions.clawSpeed)
+		liftRotatorControl(
+			buttonStatus(options.liftRotatorUp),
+			buttonStatus(options.liftRotatorDown),
+			motorVelocity(speedOptions.liftRotatorSpeed)
 		);
+
+        liftPlateControl(
+            buttonStatus(options.liftPlateVertical),
+            buttonStatus(options.liftPlateHorizontal),
+            motorVelocity(speedOptions.liftPlateSpeed)
+        );
 	}
 
 /*

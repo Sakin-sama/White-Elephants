@@ -40,14 +40,18 @@ void initialize() {
 		}
 	});
 
-	claw.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
 	lift.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
+	liftRotator.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
+    liftPlate.set_encoder_units(pros::E_MOTOR_ENCODER_DEGREES);
 	lift.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
-	claw.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+	liftRotator.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
+    liftPlate.set_brake_mode(pros::E_MOTOR_BRAKE_HOLD);
 	lift.tare_position();
+	liftRotator.tare_position();
+    liftPlate.tare_position();
 	lift.set_zero_position(0);
-	claw.tare_position();
-	claw.set_zero_position(0);
+    liftRotator.set_zero_position(0);
+    liftPlate.set_zero_position(0);
 	
 	//MVlib logger - straight from documentation example. See https://github.com/lewispinstein-hue/MotionView/blob/main/MVLib/README.md
 	//   auto& logger = mvlib::Logger::getInstance();
@@ -112,17 +116,22 @@ void opcontrol() {
 			.intakeBackward = pros::E_CONTROLLER_DIGITAL_A,
 			.liftUp = pros::E_CONTROLLER_DIGITAL_L1,
 			.liftDown = pros::E_CONTROLLER_DIGITAL_L2,
-			.clawUp = pros::E_CONTROLLER_DIGITAL_R1,
-			.clawDown = pros::E_CONTROLLER_DIGITAL_R2
+			.liftRotatorUp = pros::E_CONTROLLER_DIGITAL_L1,
+			.liftRotatorDown = pros::E_CONTROLLER_DIGITAL_L2,
+            .liftPlateVertical = pros::E_CONTROLLER_DIGITAL_L1,
+            .liftPlateHorizontal = pros::E_CONTROLLER_DIGITAL_L2
 		},{
 			//Speed options for the motors
 			//remove entire line for default speed of 100% for said motor
 			.intakeSpeed = motorVelocity(85),
 			.liftSpeed = motorVelocity(90),
-			.clawSpeed = motorVelocity(80)
+			.liftRotatorSpeed = motorVelocity(100),
+            .liftPlateSpeed = motorVelocity(80)
 		});
 
-		pneumaticControls();
+		pneumaticControls({
+            .clawToggle = pros::E_CONTROLLER_DIGITAL_X
+        });
 		//Delay for resources
 		pros::delay(10);
 	  }

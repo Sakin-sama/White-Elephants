@@ -21,6 +21,7 @@
   extern pros::Motor intake;
   extern pros::Motor claw;
   extern pros::Motor liftRotator;
+  extern pros::Motor liftPlate;
   extern pros::MotorGroup lift;
   
 //Pneumatics

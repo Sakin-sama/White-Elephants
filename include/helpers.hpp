@@ -16,13 +16,16 @@
         std::optional<pros::controller_digital_e_t> intakeBackward = std::nullopt;
         std::optional<pros::controller_digital_e_t> liftUp = std::nullopt;
         std::optional<pros::controller_digital_e_t> liftDown = std::nullopt;
-        std::optional<pros::controller_digital_e_t> clawUp = std::nullopt;
-        std::optional<pros::controller_digital_e_t> clawDown = std::nullopt;
+        std::optional<pros::controller_digital_e_t> liftRotatorUp = std::nullopt;
+        std::optional<pros::controller_digital_e_t> liftRotatorDown = std::nullopt;
+        std::optional<pros::controller_digital_e_t> liftPlateVertical = std::nullopt;
+        std::optional<pros::controller_digital_e_t> liftPlateHorizontal = std::nullopt;
     };
     struct motorSpeedOptions {
         double intakeSpeed = 127;
         double liftSpeed = 127;
-        double clawSpeed = 127;
+        double liftRotatorSpeed = 127;
+        double liftPlateSpeed = 127;
     };
     
     struct pneumaticControlOptions {
@@ -47,7 +50,8 @@
         void motorControls(const struct motorControlOptions& options = {}, const struct motorSpeedOptions& speedOptions = {});
         void intakeControl(bool forward, bool backward, double speed);
         void liftControl(bool up, bool down, double speed);
-        void clawRotatorControl(bool up, bool down, double speed);
+        void liftRotatorControl(bool up, bool down, double speed);
+        void liftPlateControl(bool vertical, bool horizontal, double speed);
     //Related to pneumatics (use pneumaticControls, do not remove it)
         void pneumaticControls(const struct pneumaticControlOptions& options = {});
         void clawStateControl(bool toggle);
