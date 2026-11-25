@@ -8,13 +8,13 @@
 
 //Motors
   //Miscellaneous motors
-    pros::Motor intake(15, pros::v5::MotorGears::blue);
-    pros::Motor liftPlate(6, pros::v5::MotorGears::green);
-    pros::Motor liftRotator(17,pros::v5::MotorGears::green);
-    pros::MotorGroup lift({10,-1}, pros::v5::MotorGears::green);
+    pros::Motor intake(20, pros::v5::MotorGears::blue);
+    pros::Motor liftPlate(4, pros::v5::MotorGears::green);
+    pros::Motor liftRotator(3,pros::v5::MotorGears::green);
+    pros::MotorGroup lift({1,-2}, pros::v5::MotorGears::green);
 
   //Drivetrain
-    pros::MotorGroup intakeRight({1,-11}, pros::v5::MotorGears::green);
+    pros::MotorGroup intakeRight({10,-11}, pros::v5::MotorGears::green);
     pros::MotorGroup intakeLeft({-10,20}, pros::v5::MotorGears::green);
 
 //Pneumatics
