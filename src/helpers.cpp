@@ -6,7 +6,6 @@
     bool isIntaking = false;
     float drivetrainSpeedConstant = 0.85;
     float currentDriveSpeedMultiplier = 1.0;
-    int liftStage = 1;
 /*
 Motor velocity conversion
 mostly for my own simplification
@@ -123,20 +122,34 @@ that the old task has ended by the new call
 
 //Function for your lift
 	void liftControl(bool up, bool down, double speed) {
-
-	}
-
-
-//Function for your claw rotator
-	void liftRotatorControl(bool up, bool down, double rotatorSpeed, double plateSpeed) {
-        if (up) {
-            liftRotator.move_absolute(405, rotatorSpeed);
+        if (up && (liftRotatorPosition.get_position() > 125)) {
+            lift.move_absolute(1080, speed);
             return;
         }
 
         if (down) {
-            liftRotator.move_absolute(0, rotatorSpeed);
+            lift.move_absolute(0, speed);
             return;
+        }
+
+        lift.brake();
+	}
+
+
+//Function for your claw rotator
+	void liftRotatorControl(bool up, bool down, double speed) {
+        if (up) {
+            liftRotator.move_absolute(405, speed);
+            return;
+        }
+
+        if (down && (lift.get_position() > 25)) {
+            liftRotator.move_absolute(140, speed);
+            return;
+        }
+
+        if (down) {
+            liftRotator.move_absolute(0,speed);
         }
 
         liftRotator.brake();
@@ -163,8 +176,7 @@ assign controls in main.cpp
 		liftRotatorControl(
 			buttonStatus(options.liftRotatorUp),
 			buttonStatus(options.liftRotatorDown),
-			motorVelocity(speedOptions.liftRotatorSpeed),
-            motorVelocity(speedOptions.liftPlateSpeed)
+			motorVelocity(speedOptions.liftRotatorSpeed)
 		);
 
 	}

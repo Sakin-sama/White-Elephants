@@ -26,14 +26,11 @@
 
 //Sensors
 	pros::Imu imu(13);
-  	pros::Distance left(11);
-   	pros::Distance right(11);
-   	pros::Distance clawSide(8);
-   	pros::Distance intakeSide(7);
 
 //Rotation sensors
     //Miscellaneous
-
+        pros::Rotation liftRotatorPosition(1);
+        pros::Rotation liftPlatePosition(1);
     //Tracking Wheels
         pros::Rotation verticalEncoder(18);
         lemlib::TrackingWheel verticalTrackingWheel(&verticalEncoder, lemlib::Omniwheel::NEW_2, -0.75);

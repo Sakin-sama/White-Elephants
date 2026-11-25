@@ -7,7 +7,6 @@
     extern bool isIntaking;
     extern float drivetrainSpeedConstant;
     extern float currentDriveSpeedMultiplier;
-    extern int liftStage;
 //Structs
     struct motorControlOptions {
         /*
@@ -25,7 +24,6 @@
         double intakeSpeed = 127;
         double liftSpeed = 127;
         double liftRotatorSpeed = 127;
-        double liftPlateSpeed = 127;
     };
     
     struct pneumaticControlOptions {
@@ -67,7 +65,7 @@
         void motorControls(const struct motorControlOptions& options = {}, const struct motorSpeedOptions& speedOptions = {});
         void intakeControl(bool forward, bool backward, double speed);
         void liftControl(bool up, bool down, double speed);
-        void liftRotatorControl(bool up, bool down, double rotatorSpeed, double plateSpeed);
+        void liftRotatorControl(bool up, bool down, double speed);
     //Related to pneumatics (use pneumaticControls, do not remove it)
         void pneumaticControls(const struct pneumaticControlOptions& options = {});
         void clawStateControl(bool toggle);

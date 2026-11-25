@@ -32,8 +32,8 @@ void initialize() {
 			pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
 			pros::lcd::print(3, "Lift: %f", lift.get_position()); // lift position
 			pros::lcd::print(4, "isIntaking: %f", isIntaking); // is the intake running
-			pros::lcd::print(5, "liftStage: %d", liftStage); // what speed is the drivetrain running at
-            pros::lcd::print(6, "liftRotator: %f", liftRotator.get_position()); // what speed is the drivetrain running at
+			pros::lcd::print(5, "liftStage: %f", currentDriveSpeedMultiplier); // what speed is the drivetrain running at
+            pros::lcd::print(6, "liftRotator: %f", liftRotatorPosition.get_position()); // what is the position of the lift rotator
 			// log position telemetry
 			lemlib::telemetrySink()->info("Chassis pose: {}", chassis.getPose());
 			// delay to save resources
@@ -110,11 +110,11 @@ void opcontrol() {
     pros::Task liftPlateAutomation([=]() {
         while (true) {
             if (liftRotator.get_position() < 125) {
-                moveAbsolute(liftPlate, -((4*liftRotator.get_position())/10), {}, {}, {.exitCondition = 3});
+                moveAbsolute(liftPlate, -((4*liftRotatorPosition.get_position())/10), {.rotationSensor = liftPlatePosition}, {}, {.exitCondition = 3});
             }
 
             if (liftRotator.get_position() >= 125) {
-                moveAbsolute(liftPlate, 90-((55*liftRotator.get_position())/100), {}, {}, {.exitCondition = 3});
+                moveAbsolute(liftPlate, 90-((55*liftRotatorPosition.get_position())/100), {.rotationSensor = liftPlatePosition}, {}, {.exitCondition = 3});
             }
             pros::delay(50);
         }
@@ -136,8 +136,7 @@ void opcontrol() {
 			//remove entire line for default speed of 100% for said motor
 			.intakeSpeed = motorVelocity(85),
 			.liftSpeed = motorVelocity(90),
-			.liftRotatorSpeed = motorVelocity(85),
-            .liftPlateSpeed = motorVelocity(12)
+			.liftRotatorSpeed = motorVelocity(85)
 		});
 
 		pneumaticControls({

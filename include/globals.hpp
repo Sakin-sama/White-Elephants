@@ -1,6 +1,7 @@
 
 #include "api.h"
 #include "lemlib/api.hpp"
+#include "main.h"
 #include "mvlib/Optional/lemlib.hpp"
 #include <array>
 #include <string>
@@ -32,6 +33,8 @@
   extern pros::Imu imu;
   extern pros::Distance left;
   extern pros::Distance right;
+  extern pros::Rotation liftRotatorPosition;
+  extern pros::Rotation liftPlatePosition;
 
 //Tracking Wheel
   extern pros::Rotation verticalEncoder;
