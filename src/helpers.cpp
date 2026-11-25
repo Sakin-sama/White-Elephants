@@ -6,7 +6,7 @@
     bool isIntaking = false;
     float drivetrainSpeedConstant = 0.85;
     float currentDriveSpeedMultiplier = 1.0;
-
+    int liftStage = 1;
 /*
 Motor velocity conversion
 mostly for my own simplification
@@ -51,6 +51,56 @@ then asks which type of button press we want
         return false;
     }
 
+/*
+THIS FUNCTION THREADS
+Do not call it for a singular motor multiple times unless certain
+that the old task has ended by the new call
+*/
+    void moveAbsolute(const pros::Motor motor, const double desiredPosition, const moveAbsoluteSensor sensor, const struct moveAbsolutePID PID, const struct moveAbsoluteConditions exitConditions) {
+        //Declares PID and gives starting values
+            double previousPosition;
+            if (sensor.rotationSensor) {
+                previousPosition = sensor.rotationSensor->get_position();
+            } else if (sensor.motorSensor) {
+                previousPosition = sensor.motorSensor->get_position();
+            } else {
+                previousPosition = motor.get_position();
+            }
+            double P;
+            double I;
+            double D;
+        
+        //Runs PID program
+        while ((exitConditions.exitCondition < std::abs((
+                sensor.rotationSensor ? sensor.rotationSensor->get_position():
+                sensor.motorSensor ? sensor.motorSensor->get_position():
+                motor.get_position()) - desiredPosition))
+                || !exitConditions.isExitCondition) {
+            //Runs PID calculations
+                if (sensor.rotationSensor) {
+                    P = desiredPosition - sensor.rotationSensor->get_position();
+                    I = 0;
+                    D = (sensor.rotationSensor->get_position() - previousPosition)/25.0;
+                    previousPosition = sensor.rotationSensor->get_position();
+                } else if (sensor.motorSensor) {
+                    P = desiredPosition - sensor.motorSensor->get_position();
+                    I = 0;
+                    D = (sensor.motorSensor->get_position() - previousPosition)/25.0;
+                    previousPosition = sensor.motorSensor->get_position();
+                } else {
+                    P = desiredPosition - motor.get_position();
+                    I = 0;
+                    D = (motor.get_position() - previousPosition)/25.0;
+                    previousPosition = motor.get_position();
+                }
+            
+            //Uses PID on motor and gives small delay
+                motor.move(std::clamp((P * PID.kP) - (D * PID.kD), -127.0, 127.0));
+                pros::delay(25);
+        }
+        motor.brake();
+    }
+
 //Function for intaking
 	void intakeControl(bool forward, bool backward, double speed) {
 		if (forward) {
@@ -78,14 +128,20 @@ then asks which type of button press we want
 
 
 //Function for your claw rotator
-	void liftRotatorControl(bool up, bool down, double speed) {
+	void liftRotatorControl(bool up, bool down, double rotatorSpeed, double plateSpeed) {
+        if (up) {
+            liftRotator.move_absolute(405, rotatorSpeed);
+            return;
+        }
 
+        if (down) {
+            liftRotator.move_absolute(0, rotatorSpeed);
+            return;
+        }
+
+        liftRotator.brake();
 	}
 
-//Function for your claw plate
-    void liftPlateControl(bool vertical, bool horizontal, double speed) {
-
-    }
 /*
 Motor controls
 gives on main area where all motor functions go
@@ -107,14 +163,10 @@ assign controls in main.cpp
 		liftRotatorControl(
 			buttonStatus(options.liftRotatorUp),
 			buttonStatus(options.liftRotatorDown),
-			motorVelocity(speedOptions.liftRotatorSpeed)
+			motorVelocity(speedOptions.liftRotatorSpeed),
+            motorVelocity(speedOptions.liftPlateSpeed)
 		);
 
-        liftPlateControl(
-            buttonStatus(options.liftPlateVertical),
-            buttonStatus(options.liftPlateHorizontal),
-            motorVelocity(speedOptions.liftPlateSpeed)
-        );
 	}
 
 /*

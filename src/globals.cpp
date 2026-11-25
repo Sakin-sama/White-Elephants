@@ -1,5 +1,6 @@
 #include "globals.hpp"
 #include "helpers.hpp"
+#include <algorithm>
 
 // INTAKE IS THE FRONT
 
@@ -9,8 +10,8 @@
 //Motors
   //Miscellaneous motors
     pros::Motor intake(20, pros::v5::MotorGears::blue);
-    pros::Motor liftPlate(4, pros::v5::MotorGears::green);
-    pros::Motor liftRotator(3,pros::v5::MotorGears::green);
+    pros::Motor liftPlate(-4, pros::v5::MotorGears::green);
+    pros::Motor liftRotator(-3,pros::v5::MotorGears::green);
     pros::MotorGroup lift({1,-2}, pros::v5::MotorGears::green);
 
   //Drivetrain
@@ -30,12 +31,15 @@
    	pros::Distance clawSide(8);
    	pros::Distance intakeSide(7);
 
-//Tracking Wheels
-	pros::Rotation verticalEncoder(18);
-	lemlib::TrackingWheel verticalTrackingWheel(&verticalEncoder, lemlib::Omniwheel::NEW_2, -0.75);
+//Rotation sensors
+    //Miscellaneous
 
-	pros::Rotation horizontalEncoder(14);
-	lemlib::TrackingWheel horizontalTrackingWheel(&horizontalEncoder, lemlib::Omniwheel::NEW_2, -0.75);
+    //Tracking Wheels
+        pros::Rotation verticalEncoder(18);
+        lemlib::TrackingWheel verticalTrackingWheel(&verticalEncoder, lemlib::Omniwheel::NEW_2, -0.75);
+
+        pros::Rotation horizontalEncoder(14);
+        lemlib::TrackingWheel horizontalTrackingWheel(&horizontalEncoder, lemlib::Omniwheel::NEW_2, -0.75);
 
 //Odometry Settings
   	lemlib::OdomSensors Sensors(
