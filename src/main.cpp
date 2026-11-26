@@ -113,11 +113,11 @@ void opcontrol() {
     pros::Task liftPlateAutomation([=]() {
         while (true) {
             if ((liftRotatorPosition.get_position()/100.0) < 150) {
-                moveAbsolute(liftPlate, -(1*(liftRotatorPosition.get_position()/100.0)/3), {.rotationSensor = liftPlatePosition}, {.kP = 0.75, .kD = 0.05, .maxSpeed = motorVelocity(20)}, {.timeout = 150});
+                moveAbsolute(liftPlate, -(1*(liftRotatorPosition.get_position()/100.0)/3), {.rotationSensor = liftPlatePosition}, {.kP = 0.5, .kD = 0.01, .maxSpeed = motorVelocity(15)}, {.timeoutExitCondition = 150});
             }
 
             if ((liftRotatorPosition.get_position()/100.0) >= 150) {
-                moveAbsolute(liftPlate, 90-(1*(liftRotatorPosition.get_position()/100.0)/3), {.rotationSensor = liftPlatePosition}, {.kP = 0.75, .kD = 0.05, .maxSpeed = motorVelocity(20)}, {.timeout = 150});
+                moveAbsolute(liftPlate, 90-(1*(liftRotatorPosition.get_position()/100.0)/3), {.rotationSensor = liftPlatePosition}, {.kP = 0.5, .kD = 0.01, .maxSpeed = motorVelocity(15)}, {.timeoutExitCondition = 150});
             }
             pros::delay(50);
         }

@@ -44,8 +44,8 @@
 
     struct moveAbsoluteConditions {
         bool isExitCondition = true;
-        double exitCondition = 5;
-        int timeout = 10000;
+        double errorExitCondition = 5;
+        int timeoutExitCondition = 10000;
     };
 
     struct moveAbsoluteSensor {
@@ -63,6 +63,7 @@
         double motorVelocity(int givenVelocity);
         float drivetrainSpeedModifier(const std::optional<pros::controller_digital_e_t>& button = std::nullopt);
         bool buttonStatus(const std::optional<pros::controller_digital_e_t>& button, const enum buttonPressTypes& pressType = buttonPressTypes::HELD);
+        bool exitConditionPID(const pros::Motor& motor, const double desiredPosition, const int time, const moveAbsoluteSensor sensor, const moveAbsoluteConditions exitConditions);
         void moveAbsolute(const pros::Motor motor, const double desiredPosition, const struct moveAbsoluteSensor sensor = {}, const struct moveAbsolutePID PID = {}, const struct moveAbsoluteConditions exitConditions = {});
     //Related to motors (use motorControls, do not remove it)
         void motorControls(const struct motorControlOptions& options = {}, const struct motorSpeedOptions& speedOptions = {});

@@ -2,6 +2,7 @@
 #include "liblvgl/llemu.hpp"
 #include "pros/llemu.hpp"
 #include "pros/misc.h"
+#include <cmath>
 
 //Variables
     bool isIntaking = false;
@@ -51,6 +52,63 @@ then asks which type of button press we want
         return false;
     }
 
+//PID exit condition
+    bool exitConditionPID(const pros::Motor& motor, const double desiredPosition, const int time, const moveAbsoluteSensor sensor, const moveAbsoluteConditions exitConditions) {
+        if (!exitConditions.isExitCondition) {
+            return true;
+        }
+
+        if (exitConditions.timeoutExitCondition < time) {
+            return false;
+        }
+
+        if (sensor.rotationSensor) {
+            if (exitConditions.errorExitCondition > std::abs((desiredPosition - (sensor.rotationSensor->get_position()/100.0)))) {
+                return false;
+            }
+            return true;
+        }
+
+        if (sensor.motorSensor) {
+            if (exitConditions.errorExitCondition > std::abs((desiredPosition - (sensor.motorSensor->get_position()/100.0)))) {
+                return false;
+            }
+            return true;
+        }
+
+        if (exitConditions.errorExitCondition > std::abs((desiredPosition - (motor.get_position()/100.0)))) {
+            return false;
+        }
+
+        return true;
+    }
+
+//P value updates
+    double returnP(const double desiredPosition, const double currentPosition) {
+        return desiredPosition - currentPosition;
+    }
+
+//I value updates
+    double returnI(const double previousI, const double previousPosition, const double currentPosition, const double desiredPosition) {
+        bool crossedTarget;
+        if (std::signbit(previousPosition - desiredPosition) == std::signbit(currentPosition - desiredPosition)) {
+            crossedTarget = false;
+        } else {
+            crossedTarget = true;
+        }
+
+        if (crossedTarget) {
+            return 0;
+        }
+
+        return previousI + (desiredPosition - currentPosition);
+    }
+
+//D value updates
+    double returnD(const double currentPosition, const double previousPosition) {
+        return (previousPosition - currentPosition)/0.025;
+    }
+
 /*
 THIS FUNCTION THREADS
 Do not call it for a singular motor multiple times unless certain
@@ -59,46 +117,41 @@ that the old task has ended by the new call
     void moveAbsolute(const pros::Motor motor, const double desiredPosition, const moveAbsoluteSensor sensor, const struct moveAbsolutePID PID, const struct moveAbsoluteConditions exitConditions) {
         //Declares PID and gives starting values
             double previousPosition;
+            double currentPosition;
             if (sensor.rotationSensor) {
                 previousPosition = (sensor.rotationSensor->get_position()/100.0);
+                currentPosition = (sensor.rotationSensor->get_position()/100.0);
             } else if (sensor.motorSensor) {
                 previousPosition = sensor.motorSensor->get_position();
+                currentPosition = sensor.motorSensor->get_position();
             } else {
                 previousPosition = motor.get_position();
+                currentPosition = motor.get_position();
             }
             double P;
             double I;
             double D;
-            int timeout = 0;
+            int time = 0;
         
         //Runs PID program
-        while (((exitConditions.exitCondition < std::abs((
-                sensor.rotationSensor ? (sensor.rotationSensor->get_position()/100.0):
-                sensor.motorSensor ? sensor.motorSensor->get_position():
-                motor.get_position()) - desiredPosition))
-                && timeout < exitConditions.timeout) || !exitConditions.isExitCondition) {
+        while (exitConditionPID(motor, desiredPosition, time, sensor, exitConditions)) {
             //Runs PID calculations
                 if (sensor.rotationSensor) {
-                    P = desiredPosition - (sensor.rotationSensor->get_position()/100.0);
-                    I = 0;
-                    D = ((sensor.rotationSensor->get_position()/100.0) - previousPosition)/0.025;
-                    previousPosition = (sensor.rotationSensor->get_position()/100.0);
+                    currentPosition = sensor.rotationSensor->get_position()/100.0;
                 } else if (sensor.motorSensor) {
-                    P = desiredPosition - sensor.motorSensor->get_position();
-                    I = 0;
-                    D = (sensor.motorSensor->get_position() - previousPosition)/0.025;
-                    previousPosition = sensor.motorSensor->get_position();
+                    currentPosition = sensor.motorSensor->get_position();
                 } else {
-                    P = desiredPosition - motor.get_position();
-                    I = 0;
-                    D = (motor.get_position() - previousPosition)/0.025;
-                    previousPosition = motor.get_position();
+                    currentPosition = motor.get_position();
                 }
+                P = returnP(desiredPosition, currentPosition);
+                I = returnI(I, previousPosition, currentPosition, desiredPosition);
+                D = returnD(currentPosition, previousPosition);
+                previousPosition = currentPosition;
             
             //Uses PID on motor and gives small delay
-                motor.move(motorVelocity((P * PID.kP) - (D * PID.kD)));
+                motor.move(motorVelocity((P * PID.kP) + (I * PID.kI) + (D * PID.kD)));
                 pros::delay(25);
-                timeout += 25;
+                time += 25;
         }
         motor.brake();
     }
