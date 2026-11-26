@@ -113,11 +113,11 @@ void opcontrol() {
     pros::Task liftPlateAutomation([=]() {
         while (true) {
             if ((liftRotatorPosition.get_position()/100.0) < 150) {
-                moveAbsolute(liftPlate, -(1*(liftRotatorPosition.get_position()/100.0)/3), {.rotationSensor = liftPlatePosition}, {.kP = 0.75, .kD = 0.05, .maxSpeed = motorVelocity(20)});
+                moveAbsolute(liftPlate, -(1*(liftRotatorPosition.get_position()/100.0)/3), {.rotationSensor = liftPlatePosition}, {.kP = 0.75, .kD = 0.05, .maxSpeed = motorVelocity(20)}, {.timeout = 150});
             }
 
             if ((liftRotatorPosition.get_position()/100.0) >= 150) {
-                moveAbsolute(liftPlate, 90-(1*(liftRotatorPosition.get_position()/100.0)/3), {.rotationSensor = liftPlatePosition}, {.kP = 0.75, .kD = 0.05, .maxSpeed = motorVelocity(20)});
+                moveAbsolute(liftPlate, 90-(1*(liftRotatorPosition.get_position()/100.0)/3), {.rotationSensor = liftPlatePosition}, {.kP = 0.75, .kD = 0.05, .maxSpeed = motorVelocity(20)}, {.timeout = 150});
             }
             pros::delay(50);
         }
@@ -139,7 +139,7 @@ void opcontrol() {
 			//remove entire line for default speed of 100% for said motor
 			.intakeSpeed = motorVelocity(85),
 			.liftSpeed = motorVelocity(90),
-			.liftRotatorSpeed = motorVelocity(50)
+			.liftRotatorSpeed = motorVelocity(40)
 		});
 
 		pneumaticControls({

@@ -38,7 +38,8 @@
         double kP = 1;
         double kI = 0;
         double kD = 0.1;
-        double maxSpeed = 127;
+        double maxSpeed = 127.0;
+        double minSpeed = 0.0;
     };
 
     struct moveAbsoluteConditions {
