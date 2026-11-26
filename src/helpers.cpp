@@ -2,12 +2,17 @@
 #include "liblvgl/llemu.hpp"
 #include "pros/llemu.hpp"
 #include "pros/misc.h"
+#include "pros/rtos.hpp"
 #include <cmath>
+#include <memory>
+#include <unordered_map>
 
 //Variables
     bool isIntaking = false;
     float drivetrainSpeedConstant = 0.85;
     float currentDriveSpeedMultiplier = 1.0;
+//Maps
+    std::unordered_map<int, std::unique_ptr<pros::Task>> motorPIDTasks;
 /*
 Motor velocity conversion
 mostly for my own simplification
@@ -114,7 +119,7 @@ THIS FUNCTION THREADS
 Do not call it for a singular motor multiple times unless certain
 that the old task has ended by the new call
 */
-    void moveAbsolute(const pros::Motor motor, const double desiredPosition, const moveAbsoluteSensor sensor, const struct moveAbsolutePID PID, const struct moveAbsoluteConditions exitConditions) {
+    void motorPID(const pros::Motor motor, const double desiredPosition, const moveAbsoluteSensor sensor, const struct moveAbsolutePID PID, const struct moveAbsoluteConditions exitConditions) {
         //Declares PID and gives starting values
             double previousPosition;
             double currentPosition;
@@ -128,32 +133,40 @@ that the old task has ended by the new call
                 previousPosition = motor.get_position();
                 currentPosition = motor.get_position();
             }
-            double P;
-            double I;
-            double D;
+            double P = 0;
+            double I = 0;
+            double D = 0;
             int time = 0;
-        
+            double velocity = 0;
+    
         //Runs PID program
-        while (exitConditionPID(motor, desiredPosition, time, sensor, exitConditions)) {
-            //Runs PID calculations
-                if (sensor.rotationSensor) {
-                    currentPosition = sensor.rotationSensor->get_position()/100.0;
-                } else if (sensor.motorSensor) {
-                    currentPosition = sensor.motorSensor->get_position();
-                } else {
-                    currentPosition = motor.get_position();
-                }
-                P = returnP(desiredPosition, currentPosition);
-                I = returnI(I, previousPosition, currentPosition, desiredPosition);
-                D = returnD(currentPosition, previousPosition);
-                previousPosition = currentPosition;
-            
-            //Uses PID on motor and gives small delay
-                motor.move(motorVelocity((P * PID.kP) + (I * PID.kI) + (D * PID.kD)));
-                pros::delay(25);
-                time += 25;
-        }
-        motor.brake();
+            while (exitConditionPID(motor, desiredPosition, time, sensor, exitConditions)) {
+                //Runs PID calculations
+                    if (sensor.rotationSensor) {
+                        currentPosition = sensor.rotationSensor->get_position()/100.0;
+                    } else if (sensor.motorSensor) {
+                        currentPosition = sensor.motorSensor->get_position();
+                    } else {
+                        currentPosition = motor.get_position();
+                    }
+                    P = returnP(desiredPosition, currentPosition);
+                    I = returnI(I, previousPosition, currentPosition, desiredPosition);
+                    D = returnD(currentPosition, previousPosition);
+                    previousPosition = currentPosition;
+                
+                //Uses PID on motor and gives small delay
+                    velocity = std::clamp((P * PID.kP) + (I * PID.kI) + (D * PID.kD), -PID.maxSpeed, PID.maxSpeed);
+                    if (0 < velocity && velocity < PID.minSpeed) {
+                        velocity = PID.minSpeed;
+                    }
+                    if (-PID.minSpeed < velocity && velocity < 0) {
+                        velocity = -PID.minSpeed;
+                    }
+                    motor.move(velocity);
+                    pros::delay(25);
+                    time += 25;
+            }
+            motor.brake();
     }
 
 //Function for intaking

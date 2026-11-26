@@ -52,6 +52,14 @@
         std::optional<pros::Motor> motorSensor = std::nullopt;
         std::optional<pros::Rotation> rotationSensor = std::nullopt;
     };
+
+    struct moveAbsoluteTaskArgs {
+        pros::Motor motor;
+        double desiredPosition;
+        moveAbsoluteSensor sensor;
+        moveAbsolutePID PID;
+        moveAbsoluteConditions exitConditions;
+    };
 //Enums for classes
     enum class buttonPressTypes {
         HELD,
@@ -64,7 +72,10 @@
         float drivetrainSpeedModifier(const std::optional<pros::controller_digital_e_t>& button = std::nullopt);
         bool buttonStatus(const std::optional<pros::controller_digital_e_t>& button, const enum buttonPressTypes& pressType = buttonPressTypes::HELD);
         bool exitConditionPID(const pros::Motor& motor, const double desiredPosition, const int time, const moveAbsoluteSensor sensor, const moveAbsoluteConditions exitConditions);
-        void moveAbsolute(const pros::Motor motor, const double desiredPosition, const struct moveAbsoluteSensor sensor = {}, const struct moveAbsolutePID PID = {}, const struct moveAbsoluteConditions exitConditions = {});
+        double returnP(const double desiredPosition, const double currentPosition);
+        double returnI(const double previousI, const double previousPosition, const double currentPosition, const double desiredPosition);
+        double returnD(const double currentPosition, const double previousPosition);
+        void motorPID(const pros::Motor motor, const double desiredPosition, const struct moveAbsoluteSensor sensor = {}, const struct moveAbsolutePID PID = {}, const struct moveAbsoluteConditions exitConditions = {});
     //Related to motors (use motorControls, do not remove it)
         void motorControls(const struct motorControlOptions& options = {}, const struct motorSpeedOptions& speedOptions = {});
         void intakeControl(bool forward, bool backward, double speed);
