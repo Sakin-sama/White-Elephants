@@ -35,14 +35,16 @@
     };
 
     struct moveAbsolutePID {
-        double kP = 3;
+        double kP = 1;
         double kI = 0;
-        double kD = 2;
+        double kD = 0.1;
+        double maxSpeed = 127;
     };
 
     struct moveAbsoluteConditions {
         bool isExitCondition = true;
         double exitCondition = 5;
+        int timeout = 10000;
     };
 
     struct moveAbsoluteSensor {

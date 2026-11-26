@@ -27,13 +27,14 @@ void initialize() {
 	pros::Task screenTask([&]() {
 		while (true) {
 			// print robot location to the brain screen
-			pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
-			pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
+			// pros::lcd::print(0, "X: %f", chassis.getPose().x); // x
+			// pros::lcd::print(1, "Y: %f", chassis.getPose().y); // y
 			pros::lcd::print(2, "Theta: %f", chassis.getPose().theta); // heading
 			pros::lcd::print(3, "Lift: %f", lift.get_position()); // lift position
 			pros::lcd::print(4, "isIntaking: %f", isIntaking); // is the intake running
-			pros::lcd::print(5, "liftStage: %f", currentDriveSpeedMultiplier); // what speed is the drivetrain running at
-            pros::lcd::print(6, "liftRotator: %f", liftRotatorPosition.get_position()); // what is the position of the lift rotator
+			pros::lcd::print(5, "driveSpeedMultiplier: %f", currentDriveSpeedMultiplier); // what speed is the drivetrain running at
+            pros::lcd::print(6, "liftRotator: %f", (liftRotatorPosition.get_position()/100.0)); // what is the position of the lift rotator
+            pros::lcd::print(7, "liftPlate: %f", (liftPlatePosition.get_position()/100.0)); // what is the position of the lift plate
 			// log position telemetry
 			lemlib::telemetrySink()->info("Chassis pose: {}", chassis.getPose());
 			// delay to save resources
@@ -51,8 +52,10 @@ void initialize() {
 	liftRotator.tare_position();
     liftPlate.tare_position();
 	lift.set_zero_position(0);
-    liftRotator.set_zero_position(0);
+    liftRotator.set_zero_position(-15);
+    liftRotatorPosition.set_position(1500);
     liftPlate.set_zero_position(0);
+    liftPlatePosition.set_position(0);
 	
 	//MVlib logger - straight from documentation example. See https://github.com/lewispinstein-hue/MotionView/blob/main/MVLib/README.md
 	//   auto& logger = mvlib::Logger::getInstance();
@@ -109,12 +112,12 @@ void opcontrol() {
 	chassis.setBrakeMode(pros::E_MOTOR_BRAKE_COAST);
     pros::Task liftPlateAutomation([=]() {
         while (true) {
-            if (liftRotator.get_position() < 125) {
-                moveAbsolute(liftPlate, -((4*liftRotatorPosition.get_position())/10), {.rotationSensor = liftPlatePosition}, {}, {.exitCondition = 3});
+            if ((liftRotatorPosition.get_position()/100.0) < 150) {
+                moveAbsolute(liftPlate, -(1*(liftRotatorPosition.get_position()/100.0)/3), {.rotationSensor = liftPlatePosition}, {.kP = 0.75, .kD = 0.05, .maxSpeed = motorVelocity(20)});
             }
 
-            if (liftRotator.get_position() >= 125) {
-                moveAbsolute(liftPlate, 90-((55*liftRotatorPosition.get_position())/100), {.rotationSensor = liftPlatePosition}, {}, {.exitCondition = 3});
+            if ((liftRotatorPosition.get_position()/100.0) >= 150) {
+                moveAbsolute(liftPlate, 90-(1*(liftRotatorPosition.get_position()/100.0)/3), {.rotationSensor = liftPlatePosition}, {.kP = 0.75, .kD = 0.05, .maxSpeed = motorVelocity(20)});
             }
             pros::delay(50);
         }
@@ -136,7 +139,7 @@ void opcontrol() {
 			//remove entire line for default speed of 100% for said motor
 			.intakeSpeed = motorVelocity(85),
 			.liftSpeed = motorVelocity(90),
-			.liftRotatorSpeed = motorVelocity(85)
+			.liftRotatorSpeed = motorVelocity(50)
 		});
 
 		pneumaticControls({

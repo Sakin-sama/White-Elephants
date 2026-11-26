@@ -10,13 +10,13 @@
 //Motors
   //Miscellaneous motors
     pros::Motor intake(20, pros::v5::MotorGears::blue);
-    pros::Motor liftPlate(-4, pros::v5::MotorGears::green);
-    pros::Motor liftRotator(-3,pros::v5::MotorGears::green);
-    pros::MotorGroup lift({1,-2}, pros::v5::MotorGears::green);
+    pros::Motor liftPlate(-2, pros::v5::MotorGears::green);
+    pros::Motor liftRotator(-1,pros::v5::MotorGears::green);
+    pros::MotorGroup lift({-11,20}, pros::v5::MotorGears::green);
 
   //Drivetrain
-    pros::MotorGroup intakeRight({10,-11}, pros::v5::MotorGears::green);
-    pros::MotorGroup intakeLeft({-10,20}, pros::v5::MotorGears::green);
+    pros::MotorGroup intakeRight({10,-10}, pros::v5::MotorGears::green);
+    pros::MotorGroup intakeLeft({-10,10}, pros::v5::MotorGears::green);
 
 //Pneumatics
   //Claw - Left/Right is relative to INTAKE
@@ -29,8 +29,8 @@
 
 //Rotation sensors
     //Miscellaneous
-        pros::Rotation liftRotatorPosition(1);
-        pros::Rotation liftPlatePosition(1);
+        pros::Rotation liftRotatorPosition(-3);
+        pros::Rotation liftPlatePosition(4);
     //Tracking Wheels
         pros::Rotation verticalEncoder(18);
         lemlib::TrackingWheel verticalTrackingWheel(&verticalEncoder, lemlib::Omniwheel::NEW_2, -0.75);

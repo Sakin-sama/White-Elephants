@@ -1,5 +1,6 @@
 #include "helpers.hpp"
 #include "liblvgl/llemu.hpp"
+#include "pros/llemu.hpp"
 #include "pros/misc.h"
 
 //Variables
@@ -59,7 +60,7 @@ that the old task has ended by the new call
         //Declares PID and gives starting values
             double previousPosition;
             if (sensor.rotationSensor) {
-                previousPosition = sensor.rotationSensor->get_position();
+                previousPosition = (sensor.rotationSensor->get_position()/100.0);
             } else if (sensor.motorSensor) {
                 previousPosition = sensor.motorSensor->get_position();
             } else {
@@ -68,34 +69,36 @@ that the old task has ended by the new call
             double P;
             double I;
             double D;
+            int timeout = 0;
         
         //Runs PID program
-        while ((exitConditions.exitCondition < std::abs((
-                sensor.rotationSensor ? sensor.rotationSensor->get_position():
+        while (((exitConditions.exitCondition < std::abs((
+                sensor.rotationSensor ? (sensor.rotationSensor->get_position()/100.0):
                 sensor.motorSensor ? sensor.motorSensor->get_position():
                 motor.get_position()) - desiredPosition))
-                || !exitConditions.isExitCondition) {
+                && timeout < exitConditions.timeout) || !exitConditions.isExitCondition) {
             //Runs PID calculations
                 if (sensor.rotationSensor) {
-                    P = desiredPosition - sensor.rotationSensor->get_position();
+                    P = desiredPosition - (sensor.rotationSensor->get_position()/100.0);
                     I = 0;
-                    D = (sensor.rotationSensor->get_position() - previousPosition)/25.0;
-                    previousPosition = sensor.rotationSensor->get_position();
+                    D = ((sensor.rotationSensor->get_position()/100.0) - previousPosition)/0.025;
+                    previousPosition = (sensor.rotationSensor->get_position()/100.0);
                 } else if (sensor.motorSensor) {
                     P = desiredPosition - sensor.motorSensor->get_position();
                     I = 0;
-                    D = (sensor.motorSensor->get_position() - previousPosition)/25.0;
+                    D = (sensor.motorSensor->get_position() - previousPosition)/0.025;
                     previousPosition = sensor.motorSensor->get_position();
                 } else {
                     P = desiredPosition - motor.get_position();
                     I = 0;
-                    D = (motor.get_position() - previousPosition)/25.0;
+                    D = (motor.get_position() - previousPosition)/0.025;
                     previousPosition = motor.get_position();
                 }
             
             //Uses PID on motor and gives small delay
-                motor.move(std::clamp((P * PID.kP) - (D * PID.kD), -127.0, 127.0));
+                motor.move(motorVelocity((P * PID.kP) - (D * PID.kD)));
                 pros::delay(25);
+                timeout += 25;
         }
         motor.brake();
     }
@@ -122,8 +125,9 @@ that the old task has ended by the new call
 
 //Function for your lift
 	void liftControl(bool up, bool down, double speed) {
-        if (up && (liftRotatorPosition.get_position() > 125)) {
-            lift.move_absolute(1080, speed);
+        if (up && ((liftRotatorPosition.get_position()/100.0) > 125)) {
+            // lift.move_absolute(1080, speed);
+            lift.move(speed);
             return;
         }
 
@@ -139,7 +143,7 @@ that the old task has ended by the new call
 //Function for your claw rotator
 	void liftRotatorControl(bool up, bool down, double speed) {
         if (up) {
-            liftRotator.move_absolute(405, speed);
+            liftRotator.move_absolute(540, speed);
             return;
         }
 
@@ -150,6 +154,7 @@ that the old task has ended by the new call
 
         if (down) {
             liftRotator.move_absolute(0,speed);
+            return;
         }
 
         liftRotator.brake();
